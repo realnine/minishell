@@ -1,0 +1,104 @@
+# include "../minishell.h"
+
+void	init_info(t_info *info)
+{
+	info->code = 0; //추추
+	info->line = NULL;
+	info->cmd_head = NULL;
+	info->cmd_book = ft_split(CMD, ' ');   // echo cd ls ...  리스트 
+	if (!info->cmd_book)
+		error_exit("malloc\n", info);
+	info->redi_book = ft_split(REDI, ' ');  // << < > >> |  리스트
+	if (!info->redi_book)
+		error_exit("malloc\n", info);
+	info->token = NULL;
+	info->num_quote = 0;
+	info->quote_book = NULL;
+	info->quote_buf = NULL;
+}
+
+void	prompt(t_info *info)
+{
+	char	path[200];
+	int		len;
+
+	getcwd(path, 200);
+	len = ft_strlen(path);
+	path[len] = '$';
+	path[len + 1] = ' ';
+	path[len + 2] = '\0';
+	info->line = readline(path);
+}
+
+char	**set_env(char **env)
+{
+	char	**new;
+	int	i;
+
+	i = 0;
+	while (env[++i] != NULL)
+		i++;
+	if (!(new = malloc(sizeof(char *) * (i + 1))))
+		return (NULL);
+	i = -1;
+	while (env[++i])
+		new[i] = ft_strdup(env[i]);
+	new[i] = NULL;
+	return (new);
+}
+
+void	main_routine(t_info *info)
+{
+	// ft_strtrim 기능인데 자동 free기능 추가해서 만듦
+	info->line = strtrim_autofree(info->line, "\t\v\f\r ", info);
+		printf("\nline : [%s]\n", info->line);
+
+	// quote " ' 처리
+	parse_quote(info);
+		print_quote(info);
+
+	make_token(info);
+		print_token(info->token);
+		
+	syntax_check(info);
+
+	// 파이프 기준으로 cmd리스트를 새로 만들고 값을 세팅한다
+	make_cmd_lst(info, info->token);
+		//print_cmd_lst(info);
+
+
+	make_all_pipe(info);// 모든 파이프를 생성, (info->pipe_book)
+		print_pipe_book(info);
+	
+	make_child(info);
+		//print_child(info);
+
+	// ==================================================
+
+
+	//reset_free(info);
+	//system("leaks minishell | grep leaked");
+	normal_exit("\nparant exit\n", info);
+}
+
+int main(int argc, char **argv, char **envp)
+{
+	t_info	info;
+
+	(void)argc;
+	(void)argv;
+	info.envp = set_env(envp);
+	init_info(&info);
+	set_signal(1);
+	while (1)
+	{
+		prompt(&info);
+		if (!info.line)
+			error_exit("exit\n", &info); // ctrl + d 를 누르면 여기로
+		if (ft_strlen(info.line) > 0)
+			add_history(info.line);
+		if (info.line)
+			main_routine(&info);
+	}
+	return (0);
+}
