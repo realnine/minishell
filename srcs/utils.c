@@ -1,23 +1,43 @@
 # include "../minishell.h"
 
+int	**ft_malloc_int2(int len, t_info *info)
+{
+	int **ret;
+
+	ret = (int **)malloc(sizeof(int *) * len);
+	if (!ret)
+		error_exit("malloc err\n", info);
+	return (ret);
+}
+
+int	*ft_malloc_int(int len, t_info *info)
+{
+	int *ret;
+
+	ret = (int *)malloc(sizeof(int) * len);
+	if (!ret)
+		error_exit("malloc err\n", info);
+	return (ret);
+}
+
 char	*strtrim_autofree(char *src, char *str, t_info *info)
 {
 	char *dst;
 
 	dst = ft_strtrim(src, str);
 	free(src);
-	//if (!dst)
-	//	error_exit("ft_strtrim error\n", info);
-	if (info)
-		ft_putstr_fd("", 1); // tmp
+	if (!dst)
+		error_exit("ft_strtrim error\n", info);
 	return (dst);
 }
 
-t_cmd	*creat_cmd_struct(void)
+t_cmd	*creat_cmd_struct(t_info *info)
 {
 	t_cmd	*cmd;
 
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!cmd)
+		error_exit("malloc error\n", info);
 	cmd->token1 = 0;
 	cmd->token2 = 0;
 
@@ -43,13 +63,11 @@ t_cmd	*creat_cmd_struct(void)
 int	is_cmd(t_info *info, char *token)
 {
 	int	i;
-	int	len;
 
 	i = 0;
 	while (info->cmd_book[i])
 	{
-		len = ft_strlen(token);
-		if (ft_strncmp(token, info->cmd_book[i], len) == 0)
+		if (ft_strcmp(token, info->cmd_book[i]) == 0)
 			return (RET_TRUE);
 		i++;
 	}

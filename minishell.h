@@ -10,6 +10,8 @@
 # include <readline/history.h>
 # include <errno.h>
 # include <fcntl.h>
+# include <sys/wait.h>
+
 
 # define RET_TRUE	1
 # define RET_FALSE	0
@@ -64,18 +66,14 @@ typedef struct s_info
 int	g_ret_number;
 
 // signal
-void	set_signal(int	mode);
+void	set_signal(int mode);
 
 // parse_utils
 
 
 
 //syntax_check
-void	syntax_check(t_info *info);
-void	syntax_check_pipe(t_info *info, char **token);
-void	syntax_check_redi(t_info *info, char **token);
-void	syntax_check_cmd(t_info *info, char **token);
-void	syntax_check_arg(t_info *info, char **token);
+int	syntax_check(t_info *info);
 
 // exit
 void	error_exit(char *msg, t_info *info);
@@ -85,10 +83,10 @@ void	child_exit(t_info *info, t_cmd *cur, int ret);
 
 char	*insert_space(char *src, char *sep, t_info *info);
 void	make_token(t_info *info);
-void	parse_quote(t_info *info);
+int		parse_quote(t_info *info);
 void	make_child(t_info *info);
 
-void	make_cmd_lst(t_info *info, char **token);
+int		make_cmd_lst(t_info *info, char **token);
 void	set_cmd_lst(t_info *info);
 
 //deallocate
@@ -97,10 +95,12 @@ void	exit_free(t_info *info);
 
 // utils
 char	*strtrim_autofree(char *src, char *str, t_info *info);
-t_cmd	*creat_cmd_struct(void);
+t_cmd	*creat_cmd_struct(t_info *info);
 int		is_cmd(t_info *info, char *token);
 int		is_redi(t_info *info, char *token);
 int		is_arg(t_info *info, char *token);
+int		**ft_malloc_int2(int len, t_info *info);
+int		*ft_malloc_int(int len, t_info *info);
 
 //utils_print
 void	print_child(t_info *info);
@@ -109,10 +109,10 @@ void	print_token(char **token);
 void	print_quote(t_info *info);
 void	print_pipe_book(t_info *info);
 int		error_print(char *s1, char *s2, char *s3, t_info *info);
-
+int		err_print(char *msg);
 // redirection & pipe
-void	redirect_in(t_info *info, t_cmd *cmd);
-void	redirect_out(t_info *info, t_cmd *cmd);
+int		redirect_in(t_cmd *cmd);
+int		redirect_out(t_cmd *cmd);
 void	make_all_pipe(t_info *info);
 
 

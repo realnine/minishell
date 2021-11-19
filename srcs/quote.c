@@ -22,7 +22,7 @@ char	*second_quote(char *p2, char c)
 	return (NULL);
 }
 
-void	check_quote(t_info *info)
+int	check_quote(t_info *info)
 {
 	char	*p1;
 	char	*p2;
@@ -32,10 +32,10 @@ void	check_quote(t_info *info)
 	{
 		p1 = first_quote(p1);
 		if (!p1)
-			return ;
+			return (RET_TRUE);
 		p2 = second_quote(p1 + 1, *p1);
 		if (!p2)
-			error_exit("mini: quote multiline error\n", info);
+			return (err_print("mini: quote multiline error"));
 		info->num_quote++;
 		p1 = p2 + 1;
 	}
@@ -55,6 +55,8 @@ void	cut_quote_buf(t_info *info)
 		p1 = first_quote(p1);
 		p2 = second_quote(p1 + 1, *p1);
 		info->quote_book[i] = (char *)calloc(p2 - p1, sizeof(char));
+		if (!info->quote_book[i])
+			error_exit("malloc error\n", info);
 		j = 0;
 		while (++p1 < p2)
 		{
@@ -66,11 +68,12 @@ void	cut_quote_buf(t_info *info)
 	}
 }
 
-void	parse_quote(t_info *info)
+int	parse_quote(t_info *info)
 {
 	// quote syntax check ( " '또는 ' " 인 경우,  " 또는 '만 있는 경우)
 	// quote 갯수 측정 (info->num_quote에 저장)
-	check_quote(info); 
+	if (check_quote(info) == RET_FALSE)
+		return (RET_FALSE);
 
 	if (info->num_quote > 0)
 	{
@@ -83,4 +86,5 @@ void	parse_quote(t_info *info)
 		// qoute내용을 info->quote_buf 에 담는다
 		cut_quote_buf(info);
 	}
+	return (RET_TRUE);
 }

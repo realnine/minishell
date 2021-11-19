@@ -51,34 +51,32 @@ void	main_routine(t_info *info)
 {
 	// ft_strtrim 기능인데 자동 free기능 추가해서 만듦
 	info->line = strtrim_autofree(info->line, "\t\v\f\r ", info);
-		printf("\nline : [%s]\n", info->line);
+		//printf("\nline : [%s]\n", info->line);
+
+	if (info->line[0] == '\0')
+		return ;
 
 	// quote " ' 처리
-	parse_quote(info);
-		print_quote(info);
+	if (parse_quote(info) == RET_FALSE)
+		return ;
+		//print_quote(info);
 
 	make_token(info);
-		print_token(info->token);
+		//print_token(info->token);
 		
-	syntax_check(info);
+	if (syntax_check(info) == RET_FALSE)
+		return ;
 
 	// 파이프 기준으로 cmd리스트를 새로 만들고 값을 세팅한다
-	make_cmd_lst(info, info->token);
+	if (make_cmd_lst(info, info->token) ==  RET_FALSE)
+		return ;
 		//print_cmd_lst(info);
 
-
 	make_all_pipe(info);// 모든 파이프를 생성, (info->pipe_book)
-		print_pipe_book(info);
+		//print_pipe_book(info);
 	
 	make_child(info);
 		//print_child(info);
-
-	// ==================================================
-
-
-	//reset_free(info);
-	//system("leaks minishell | grep leaked");
-	normal_exit("\nparant exit\n", info);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -89,16 +87,20 @@ int main(int argc, char **argv, char **envp)
 	(void)argv;
 	info.envp = set_env(envp);
 	init_info(&info);
-	set_signal(1);
 	while (1)
 	{
+		set_signal(1);
 		prompt(&info);
 		if (!info.line)
-			error_exit("exit\n", &info); // ctrl + d 를 누르면 여기로
+		{
+			printf("pressed ctrl + d\n");
+			error_exit("exit", &info); // ctrl + d 를 누르면 여기로
+		}
 		if (ft_strlen(info.line) > 0)
 			add_history(info.line);
 		if (info.line)
 			main_routine(&info);
+		reset_free(&info);
 	}
 	return (0);
 }

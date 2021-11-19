@@ -74,21 +74,33 @@ void	ft_execve(t_info *info, t_cmd *cur)
 
 	path = make_path(info);
 	argv = make_argv(info, cur);
-	dup2(cur->fd_in, STDIN_FILENO);
-	dup2(cur->fd_out, STDOUT_FILENO);
+	//set_signal(2);
+	
+	if (cur->fd_in != 0)
+	{
+		dup2(cur->fd_in, STDIN_FILENO);
+		//close(cur->fd_in);
+	}
+	if (cur->fd_in != 1)
+	{
+		dup2(cur->fd_out, STDOUT_FILENO);
+		//close(cur->fd_out);
+	}
+
 	i = 0;
 	while (i < 3)
 	{
 		argv[0] = ft_strjoin(path[i], cur->cmd);
-		print_argv(argv);
-		execve(argv[0], argv, info->envp);
+		//print_argv(argv);
+		g_ret_number = execve(argv[0], argv, info->envp);
 		// execve가 성공하면 아래부터는 실행되지 않음
 		// execve가 성공하면 모든 메모리는 자동 해제됨
-		ft_putstr_fd("------------------\n", 1);
+		ft_putstr_fd("-----execve 통과-----\n", 1);
 		free (argv[0]); // strjoin
 		i++;
 	}
 	free_path(path);
 	free(argv);
+	//exit(g_ret_number);
 	error_exit("execve error\n", info);
 }

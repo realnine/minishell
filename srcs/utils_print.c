@@ -14,6 +14,13 @@
 	printf("\n\n");
 } */
 
+int		err_print(char *msg)
+{
+	ft_putstr_fd(msg, 2);
+	ft_putstr_fd("\n", 2);
+	return (RET_FALSE);
+}
+
 void	print_pipe_book(t_info *info)
 {
 	int	i;

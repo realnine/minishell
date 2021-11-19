@@ -15,11 +15,11 @@ void	make_pipe_book(t_info *info)
 	}
 	if (n > 0)
 	{
-		info->pipe_book = (int **)malloc(sizeof(int *) * (n + 1));
+		info->pipe_book = ft_malloc_int2(n + 1, info);
 		i = 0;
 		while (i < n)
 		{
-			info->pipe_book[i] = (int *)malloc(sizeof(int) * 2);
+			info->pipe_book[i] = ft_malloc_int(2, info);
 			if (pipe(info->pipe_book[i++]) < 0)       // 파이프 생성 
 				error_exit("pipe error\n", info);
 		}

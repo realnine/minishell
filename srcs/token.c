@@ -88,6 +88,8 @@ void	replace_quote(t_info *info)
 		{
 			tmp = info->token[i];
 			info->token[i] = ft_strdup(info->quote_book[j++]);
+			if (!info->token[i])
+				error_exit("malloc error\n", info);
 			free(tmp);
 		}
 		i++;
@@ -105,6 +107,8 @@ void	make_token(t_info *info)
 
 	// 공백을 기준으로 2차원 토큰 배열을 만든다
 	info->token = ft_split2(info->line, "\t\v\f\r ");
+	if (!info->token)
+		error_exit("split token error\n", info);
 
 	// quote 인자가 들어가야할 토큰에 다시 quote buf를 넣어준다 
 	// ex) ["000000"] => [hel lo]

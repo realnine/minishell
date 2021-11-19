@@ -3,9 +3,9 @@ CFLAGS		= -Wall -Werror -Wextra -g #-g3 -fsanitize=address
 
 NAME		= minishell
 LIBFT		= ./libft/libft.a
-RL_FLAG		= -L /usr/local/opt/readline/lib -lreadline -I /usr/local/opt/readline/include
+#RL_FLAG		= -L /usr/local/opt/readline/lib -lreadline -I /usr/local/opt/readline/include
 #RL_FLAG		= -lft -L ./libft -lreadline -I /usr/local/opt/readline/include
-#RL_FLAG		= -L /Users/jinglee/.brew/opt/readline/lib -lreadline \
+RL_FLAG		= -L /Users/jinglee/.brew/opt/readline/lib -lreadline \
 				-I /Users/jinglee/.brew/opt/readline/include
 
 SRCS1		= child.c cmd_lst_set.c cmd_lst.c dealloc.c exit.c main.c pipe.c quote.c \
