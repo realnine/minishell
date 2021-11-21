@@ -72,7 +72,7 @@ void	ft_execve(t_info *info, t_cmd *cur)
 	char	**path;
 	int		i;
 
-	path = make_path(info);
+	
 	argv = make_argv(info, cur);
 	//set_signal(2);
 	
@@ -87,20 +87,25 @@ void	ft_execve(t_info *info, t_cmd *cur)
 		//close(cur->fd_out);
 	}
 
-	i = 0;
-	while (i < 3)
-	{
-		argv[0] = ft_strjoin(path[i], cur->cmd);
-		//print_argv(argv);
+	if (cur->cmd[0] == '/')
 		g_ret_number = execve(argv[0], argv, info->envp);
-		// execve가 성공하면 아래부터는 실행되지 않음
-		// execve가 성공하면 모든 메모리는 자동 해제됨
-		ft_putstr_fd("-----execve 통과-----\n", 1);
-		free (argv[0]); // strjoin
-		i++;
+	else
+	{
+		path = make_path(info);
+		i = 0;
+		while (i < 3)
+		{
+			argv[0] = ft_strjoin(path[i], cur->cmd);
+			//print_argv(argv);
+			g_ret_number = execve(argv[0], argv, info->envp);
+			// execve가 성공하면 아래부터는 실행되지 않음
+			// execve가 성공하면 모든 메모리는 자동 해제됨
+			ft_putstr_fd("-----execve 통과-----\n", 1);
+			free (argv[0]); // strjoin
+			i++;
+		}
+		free_path(path);
 	}
-	free_path(path);
 	free(argv);
-	//exit(g_ret_number);
-	error_exit("execve error\n", info);
+	ft_putstr_fd("mini: No such file or directory\n", 2);
 }

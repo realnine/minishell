@@ -65,6 +65,17 @@ int	is_cmd(t_info *info, char *token)
 	int	i;
 
 	i = 0;
+	while (i < 3)
+	{
+		if (ft_strncmp(token, "/bin/", 5) == 0)
+			token += 5;
+		else if (ft_strncmp(token, "/usr/bin/", 9) == 0)
+			token += 9;
+		else if (ft_strncmp(token, "/usr/local/bin/", 15) == 0)
+			token += 15;
+		i++;
+	}
+	i = 0;
 	while (info->cmd_book[i])
 	{
 		if (ft_strcmp(token, info->cmd_book[i]) == 0)
@@ -83,6 +94,8 @@ int	is_redi(t_info *info, char *token)
 	while (info->redi_book[i])
 	{
 		len = ft_strlen(token);
+		if (len == 0)
+			return (RET_FALSE);
 		if (ft_strncmp(token, info->redi_book[i], len) == 0)
 			return (RET_TRUE);
 		i++;

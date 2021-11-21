@@ -50,7 +50,7 @@ void	cut_quote_buf(t_info *info)
 
 	i = 0;
 	p1 = info->line;
-	while (info->num_quote--)
+	while (i < info->num_quote)
 	{
 		p1 = first_quote(p1);
 		p2 = second_quote(p1 + 1, *p1);
@@ -60,6 +60,8 @@ void	cut_quote_buf(t_info *info)
 		j = 0;
 		while (++p1 < p2)
 		{
+			if (p1 == p2)
+				break ;
 			info->quote_book[i][j++] = *p1;
 			*p1 = '0';
 		}
@@ -86,5 +88,6 @@ int	parse_quote(t_info *info)
 		// qoute내용을 info->quote_buf 에 담는다
 		cut_quote_buf(info);
 	}
+	info->num_quote = 0;
 	return (RET_TRUE);
 }

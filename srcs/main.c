@@ -14,7 +14,7 @@ void	init_info(t_info *info)
 	info->token = NULL;
 	info->num_quote = 0;
 	info->quote_book = NULL;
-	info->quote_buf = NULL;
+	//info->quote_buf = NULL;
 }
 
 void	prompt(t_info *info)
@@ -56,7 +56,7 @@ void	main_routine(t_info *info)
 {
 	// ft_strtrim 기능인데 자동 free기능 추가해서 만듦
 	info->line = strtrim_autofree(info->line, "\t\v\f\r ", info);
-		//printf("\nline : [%s]\n", info->line);
+	//printf("\nline : [%s]\n", info->line);
 
 	if (info->line[0] == '\0')
 		return ;
@@ -75,7 +75,7 @@ void	main_routine(t_info *info)
 	// 파이프 기준으로 cmd리스트를 새로 만들고 값을 세팅한다
 	if (make_cmd_lst(info, info->token) ==  RET_FALSE)
 		return ;
-		print_cmd_lst(info);
+		//print_cmd_lst(info);
 
 	make_all_pipe(info);// 모든 파이프를 생성, (info->pipe_book)
 		//print_pipe_book(info);

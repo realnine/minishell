@@ -29,7 +29,7 @@ void	create_child(t_info *info, t_cmd *cur)
 	{
 		cur->pid = pid;
 
-		if (cur->fd_in != 0)
+		if (cur->pipe_fd)
 			close(cur->prev->pipe_fd[WRITE]);
 	}
 	else if (pid == 0) // 자식 프로세스는 여기로
@@ -76,22 +76,25 @@ void    make_child(t_info *info)
     cur = info->cmd_head;
     while (cur)
     {
-        if (is_blt(cur))
-            exe_cmd(info, cur);
-        else
-        {
-			set_signal(2); 
-				// 여긴 자식 프로세스를 분기한 부모 프로세스의 시그널을 세팅 하는 것에 의미가 있다
-				// 자식 프로세스는 execve()로 실행 로직이 교체될 때, 사라지고 시그널 세팅 정보도 사라짐
-            create_child(info, cur);
-            // printf("hey\n");
-            pid = wait(NULL);
-            // printf("abc\n");
-            printf("--------child exit(%d)-------\n", pid);
-			//waitpid(pid, &g_ret_number, WUNTRACED);
-			//if (WIFEXITED(g_ret_number))
-			//	g_ret_number = WEXITSTATUS(g_ret_number);
-        }
+		if (cur->cmd)
+		{
+        	if (is_blt(cur))
+        	    exe_cmd(info, cur);
+        	else
+        	{
+				set_signal(2); 
+					// 여긴 자식 프로세스를 분기한 부모 프로세스의 시그널을 세팅 하는 것에 의미가 있다
+					// 자식 프로세스는 execve()로 실행 로직이 교체될 때, 사라지고 시그널 세팅 정보도 사라짐
+        	    create_child(info, cur);
+        	    // printf("hey\n");
+        	    pid = wait(NULL);
+        	    // printf("abc\n");
+        	    printf("--------child exit(%d)-------\n", pid);
+				//waitpid(pid, &g_ret_number, WUNTRACED);
+				//if (WIFEXITED(g_ret_number))
+				//	g_ret_number = WEXITSTATUS(g_ret_number);
+        	}
+		}
         cur = cur->next;
     }
 }
