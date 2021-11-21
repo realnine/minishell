@@ -20,6 +20,7 @@ void	exit_arg(t_info *info, t_cmd *cur, int *ret_num)
 			error_print("exit", cur->arg, "numeric argument required", info);
 			exit(255);
 		}
+		i++;
 	}
 	*ret_num = ft_atoi(cur->arg);
 }
@@ -31,11 +32,14 @@ void	ft_exit(t_info *info, t_cmd *cur) //추추
 
 	i = -1;
 	ret_num = 0;
-	while (cur->arg[++i])
+	if (cur->arg)
 	{
-		if (ft_isspace(cur->arg[i]))
-			error_print("exit", "too many arguments", NULL, info);
+		while (cur->arg[++i])
+		{
+			if (ft_isspace(cur->arg[i]))
+				error_print("exit", "too many arguments", NULL, info);
+		}
+		exit_arg(info, cur, &ret_num);
 	}
-	exit_arg(info, cur, &ret_num);
 	exit(ret_num);
 }

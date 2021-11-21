@@ -26,7 +26,7 @@ char	**copy_envp(char **envp, int add)
 		return (NULL);//에러 문장 보내기
 	i = -1;
 	while (envp[++i])
-		new[i] = ft_strdup(envp[i]);
+		new[i] = envp[i];
 	new[i] = NULL;
 	return (new);
 }
@@ -56,6 +56,7 @@ char	**sort_export(char **envp)
 			j++;
 		}
 	}
+	i = -1;
 	return (copy);
 }
 
@@ -65,21 +66,25 @@ void	set_export_print(t_cmd *cur, char **envp, t_info *info)
 	char	*env_val;
 	char	*env_name;
 	int	i;
+	int	trash;
 
 	sorted = sort_export(envp);
 	i = -1;
 	while (sorted[++i])
 	{
 		ft_putstr_fd("declare -x ", cur->fd_out);
-		env_name = cut_env_name(sorted[i], NULL, info); //trash?
+		env_name = cut_env_name(sorted[i], &trash, info); //trash?
 		ft_putstr_fd(env_name, cur->fd_out);
 		env_val = find_env_val(env_name, sorted);
 		ft_putstr_fd("=\"", cur->fd_out); //export HHH= 과 export HHH 는 다르다,,,,(수정)
 		ft_putstr_fd(env_val, cur->fd_out);
 		ft_putchar_fd('\"', cur->fd_out);
 		ft_putchar_fd('\n', cur->fd_out);
+		// ft_free(&sorted[i]);
+		ft_free(&env_name);
 	}
-	//sorted free하기
+	free(sorted);
+	sorted = NULL;
 }
 
 char	*ft_charjoin(char *str, char c)
@@ -102,7 +107,7 @@ char	*ft_charjoin(char *str, char c)
 			while (str[++i])
 				new[i] = str[i];
 			new[i] = c;
-			free(str);
+			ft_free(&str);
 		}
 		new[len + 1] = '\0';
 	}
@@ -123,7 +128,8 @@ char	*export_etc(char *arg, char **envp, char *str, t_info *info)
 			i++;
 			env_name = cut_env_name(arg + i, &i, info);
 			env_val = find_env_val(env_name, envp);
-			str = ft_strjoin(str, env_val);
+			str = ft_strjoin_free(str, env_val, 1);
+			ft_free(&env_name);
 		}
 		else
 			str = ft_charjoin(str, arg[i]);
@@ -148,33 +154,36 @@ int		is_exist_env(char *name, char **envp)
 
 void	add_export(t_cmd *cur, char ***envp, t_info *info)
 {
-	char	**new;
 	char	*str;
-	int	env_pos;
+	int	pos;
 	int	i;
 
 	i = 0;
-	str = ft_strdup(cut_env_name(cur->arg, &i, info));
-	env_pos = is_exist_env(str, *envp);
+	str = cut_env_name(cur->arg, &i, info);
+	printf("str = [%s]\n", str);
+
+	pos = is_exist_env(str, *envp);
 	if (is_export_normal(cur) == -1)
-		str = ft_strjoin(str, cur->arg + i + 1);
+		str = ft_strjoin_free(str, cur->arg + i + 1, 1);
 	else
 		str = export_etc(cur->arg + i + 1, *envp, str, info);
-	if (env_pos == -1)
+	printf("str = [%s]\n", str);
+	
+	if (pos == -1)
 	{
-		new = copy_envp(*envp, 2);
-		i = 0;
-		while (new[i])
-			i++;
-		new[i] = ft_strdup(str);
-		new[i + 1] = NULL;
+		*envp = add_env(*envp, str);
+		printf("new-\n");
 	}
 	else
 	{
-		new = copy_envp(*envp, 1);
-		new[env_pos] = ft_strdup(str);
+		ft_strlcpy((*envp)[pos], str, ft_strlen(str) + 1);
+		printf("new+\n");
+		ft_free(&str);
 	}
-	*envp = new;
+	printf("str = [%s]\n", str);
+	// free(*envp);
+	system("leaks minishell | grep leaked");
+
 }
 
 int	ft_export(t_info *info, t_cmd *cur)
@@ -184,7 +193,7 @@ int	ft_export(t_info *info, t_cmd *cur)
 		set_export_print(cur, info->envp, info);
 	else
 	{
-		if (cur->arg[0] != '_' && !ft_isalnum(cur->arg[0]))
+		if (cur->arg[0] != '_' && !ft_isalnum(cur->arg[0])) //env 조건 확인
 		{
 			info->code = 1; //추추
 			return (error_print("export", cur->arg, "not a valid identifier", info));

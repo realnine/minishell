@@ -63,20 +63,16 @@ int	dir_oldpwd(t_cmd *cur, char *path, t_info *info)
 int	dir_env(char *path, char *arg, t_info *info)
 {
 	char	*env_val;
-	size_t	len;
-	int	i;
+	char	*t;
+	int	trash;
 
-	i = 0;
-	while(ft_isalpha(arg[i]) || arg[i] != '_')
-		i++;
-	env_val = find_env_val(cut_env_name(arg + i, NULL, info), info->envp); //수정??
+	t = cut_env_name(arg + 1, &trash, info);
+	env_val = find_env_val(t, info->envp); //수정??
+	ft_free(&t);
 	if (!env_val)
 		dir_home(path, arg, info);
 	else
-	{
-		len = ft_strlen(env_val) + 1;
-		ft_strlcpy(path, env_val, len + 1);
-	}
+		ft_strlcpy(path, env_val, ft_strlen(env_val) + 1);
 	return (RET_TRUE);
 }
 
@@ -128,9 +124,11 @@ char	**add_env(char **envp, char *str)
 		return (NULL);
 	i = -1;
 	while(envp[++i])
-		new[i] = ft_strdup(envp[i]);
+		new[i] = envp[i];
 	new[i] = ft_strdup(str);
 	new[i + 1] = NULL;
+	free(str);
+	free(envp);
 	return (new);
 }
 
@@ -151,9 +149,9 @@ int	dir_move(char *path, char ***envp, t_info *info)
 	getcwd(buf, PATH_MAX);
 	ck_env = find_env_val("OLDPWD", *envp);
 	if (!ck_env)
-		*envp = add_env(*envp, ft_strjoin("OLDPWD=", tmp)); //환경변수 포인터 확인
+		*envp = add_env(*envp, ft_strjoin("OLDPWD=", tmp)); //ㅅㅜ저ㅇㅇ
 	else
-		ft_strlcpy(find_env_val("OLDPWD", *envp), tmp, ft_strlen(tmp));
+		ft_strlcpy(find_env_val("OLDPWD", *envp), tmp, ft_strlen(tmp) + 1);
 	ft_strlcpy(tmp, buf, ft_strlen(buf) + 1);
 	g_ret_number = 0; //추추
 	return (RET_TRUE);

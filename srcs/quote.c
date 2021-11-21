@@ -50,7 +50,7 @@ void	cut_quote_buf(t_info *info)
 
 	i = 0;
 	p1 = info->line;
-	while (i < info->num_quote)
+	while (info->num_quote--)
 	{
 		p1 = first_quote(p1);
 		p2 = second_quote(p1 + 1, *p1);

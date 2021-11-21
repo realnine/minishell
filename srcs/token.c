@@ -88,9 +88,9 @@ void	replace_quote(t_info *info)
 		{
 			tmp = info->token[i];
 			info->token[i] = ft_strdup(info->quote_book[j++]);
+			free(tmp);
 			if (!info->token[i])
 				error_exit("malloc error\n", info);
-			free(tmp);
 		}
 		i++;
 	}

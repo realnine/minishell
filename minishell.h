@@ -12,6 +12,9 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 
+// color
+# define SKY	"\x1b[1;34m"
+# define RESET	"\x1b[0m"
 
 # define RET_TRUE	1
 # define RET_FALSE	0
@@ -54,7 +57,7 @@ typedef struct s_info
 	char	*line;
 	char	**token;
 	char	**quote_book;
-	char	*quote_buf;
+	//char	*quote_buf;
 	int		num_quote;
 
 	char	**cmd_book;
@@ -92,6 +95,7 @@ void	set_cmd_lst(t_info *info);
 //deallocate
 void	reset_free(t_info *info);
 void	exit_free(t_info *info);
+void	ft_free(char **ptr);
 
 // utils
 char	*strtrim_autofree(char *src, char *str, t_info *info);
@@ -131,6 +135,7 @@ int		dir_move(char *path, char ***envp, t_info *info);
 int		ft_cd(t_info *info, t_cmd *cur);
 
 //echo.c
+char	*ft_strjoin_free(char *s1, char *s2, int flag);
 char	*cut_env_name(char *arg, int *i, t_info *info);
 void	ft_echo(t_info *info, t_cmd *cur);
 //env.c

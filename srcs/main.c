@@ -21,13 +21,18 @@ void	prompt(t_info *info)
 {
 	char	path[200];
 	int		len;
+	char	*str;
 
 	getcwd(path, 200);
 	len = ft_strlen(path);
 	path[len] = '$';
 	path[len + 1] = ' ';
 	path[len + 2] = '\0';
-	info->line = readline(path);
+	str = ft_strjoin2(SKY, path, RESET);
+	if (!str)
+		error_exit("strjoin error\n", info);
+	info->line = readline(str);
+	free(str);
 }
 
 char	**set_env(char **env)
@@ -70,7 +75,7 @@ void	main_routine(t_info *info)
 	// 파이프 기준으로 cmd리스트를 새로 만들고 값을 세팅한다
 	if (make_cmd_lst(info, info->token) ==  RET_FALSE)
 		return ;
-		//print_cmd_lst(info);
+		print_cmd_lst(info);
 
 	make_all_pipe(info);// 모든 파이프를 생성, (info->pipe_book)
 		//print_pipe_book(info);
