@@ -163,6 +163,7 @@ int	ft_cd(t_info *info, t_cmd *cur)
 	int	i;
 	const int	len = ft_strlen(cur->arg);
 
+	printf("arg = [%s]\n", cur->arg);
 	i = -1;
 	ft_memset(path, 0, sizeof(path));
 	if (is_designate(cur->arg)) //ok

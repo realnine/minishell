@@ -29,13 +29,13 @@ void	create_child(t_info *info, t_cmd *cur)
 	{
 		cur->pid = pid;
 
-		if (cur->pipe_fd)
+		if (cur->prev)
 			close(cur->prev->pipe_fd[WRITE]);
 	}
 	else if (pid == 0) // 자식 프로세스는 여기로
 	{
 		cur->pid = getpid();
-		if (cur->fd_in != 0)
+		if (cur->prev)
 			close(cur->prev->pipe_fd[WRITE]); // 읽어올 파이프의 쓰기fd 부분을 닫아주어야 한다
 		
 		printf("--------run child(%d)--------\n", cur->pid);
@@ -86,13 +86,8 @@ void    make_child(t_info *info)
 					// 여긴 자식 프로세스를 분기한 부모 프로세스의 시그널을 세팅 하는 것에 의미가 있다
 					// 자식 프로세스는 execve()로 실행 로직이 교체될 때, 사라지고 시그널 세팅 정보도 사라짐
         	    create_child(info, cur);
-        	    // printf("hey\n");
         	    pid = wait(NULL);
-        	    // printf("abc\n");
         	    printf("--------child exit(%d)-------\n", pid);
-				//waitpid(pid, &g_ret_number, WUNTRACED);
-				//if (WIFEXITED(g_ret_number))
-				//	g_ret_number = WEXITSTATUS(g_ret_number);
         	}
 		}
         cur = cur->next;

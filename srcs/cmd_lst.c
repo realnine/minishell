@@ -1,28 +1,5 @@
 # include "../minishell.h"
 
-int	set_cmd_io(t_info *info)
-{
-	t_cmd *cur;
-
-	cur = info->cmd_head;
-	while (cur)
-	{
-		if (cur->next)
-			cur->fd_out = cur->pipe_fd[WRITE];
-		if (cur->prev)
-			cur->fd_in = cur->prev->pipe_fd[READ];
-
-		if (cur->redi_in)
-			if (redirect_in(cur) == RET_FALSE)
-				return (RET_FALSE);
-		if (cur->redi_out)
-			if (redirect_out(cur) == RET_FALSE)
-				return (RET_FALSE);
-		cur = cur->next;
-	}
-	return (RET_TRUE);
-}
-
 void	add_cmd_list(t_info *info, int start, int end)
 {
 	t_cmd	*new;
@@ -68,8 +45,7 @@ int	make_cmd_lst(t_info *info, char **token)
 	
 	set_cmd_lst(info);
 
-	if (set_cmd_io(info) == RET_FALSE)
-		return (RET_FALSE);
+	
 	return (RET_TRUE);
 }
 

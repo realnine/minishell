@@ -73,6 +73,7 @@ void	print_token(char **token)
 void	print_cmd_lst(t_info *info)
 {
 	t_cmd	*cur;
+	int		i;
 
 	cur = info->cmd_head;
 	while (cur)
@@ -90,6 +91,14 @@ void	print_cmd_lst(t_info *info)
 		printf("	fd_in	: (%d)\n", cur->fd_in);
 		printf("	fd_out	: (%d)\n", cur->fd_out);
 		//printf("	pipe	: (%p)\n", cur->pipe);
+		i = 0;
+		if (cur->arg_token)
+		{
+			printf("	arg_toekn : ");
+			while (cur->arg_token[i])
+				printf("[%s] ", cur->arg_token[i++]);
+			printf("\n");
+		}
 		printf("=======================\n");
 		//if (cur->prev)
 		//	printf("	=> prev	: [%s]\n\n", cur->prev->full_str);

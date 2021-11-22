@@ -23,7 +23,7 @@
 #define READ    0
 #define WRITE   1
 
-# define CMD		"cd echo env exit export pwd unset cat grep ls"
+# define CMD		"cd echo env exit export pwd unset cat grep ls mkdir rm"
 # define REDI		">> > << <"
 
 typedef struct s_cmd
@@ -34,9 +34,11 @@ typedef struct s_cmd
 	char			*cmd;
 	char			opt;
 	char			*arg;
+	char			**arg_token;
 
 	char			*redi_in;
 	char			*redi_in_arg;
+	char			*input_file;
 
 	char			*redi_out;
 	char			*redi_out_arg;
@@ -115,8 +117,7 @@ void	print_pipe_book(t_info *info);
 int		error_print(char *s1, char *s2, char *s3, t_info *info);
 int		err_print(char *msg);
 // redirection & pipe
-int		redirect_in(t_cmd *cmd);
-int		redirect_out(t_cmd *cmd);
+int		set_redi_io(t_info *info);
 void	make_all_pipe(t_info *info);
 
 
@@ -146,20 +147,21 @@ int		ft_env(t_info *info, t_cmd *cur);
 void	ft_exit(t_info *info, t_cmd *cur);
 
 //export.c
-int		is_export_normal(t_cmd *cur);
+int		ft_strslen(char **strs);
+int		is_export_normal(char *arg);
 char	**copy_envp(char **envp, int add);
 char	**sort_export(char **envp);
 void	set_export_print(t_cmd *cur, char **envp, t_info *info);
 char	*ft_charjoin(char *str, char c);
 char	*export_etc(char *arg, char **envp, char *str, t_info *info);
 int		is_exist_env(char *name, char **envp);
-void	add_export(t_cmd *cur, char ***envp, t_info *info);
+int		add_export(char *arg, char ***envp, t_info *info);
 int		ft_export(t_info *info, t_cmd *cur);
 
 //pwd.c
 void	ft_pwd(t_cmd *cur);
 //unset.c
-char	**remove_env(char **envp, int pos);
+int		remove_env(char ***envp, int pos);
 int		ft_unset(t_info *info, t_cmd *cur);
 
 void	ft_execve(t_info *info, t_cmd *cur);

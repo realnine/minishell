@@ -18,23 +18,22 @@ void	print_argv(char **argv)
 
 char	**make_argv(t_info *info, t_cmd *cur)
 {
-	int		len;
 	char	**argv;
 	int		i;
-	int		j;
 
-	len = cur->token2 - cur->token1 + 1;
-	argv = (char **)malloc(sizeof(char *) * (len + 1));
+	argv = (char **)malloc(sizeof(char *) * (ft_strslen(cur->arg_token) + 2));
 	if (!argv)
 		error_exit("malloc error\n", info);
-	i = 0;
-	j = cur->token1;
-	while (i < len)
+	argv[0] = cur->cmd;
+	if (cur->arg_token)
 	{
-		argv[i] = info->token[j++];
-		i++;
+		i = -1;
+		while (cur->arg_token[++i])
+			argv[i + 1] = cur->arg_token[i];
+		argv[i + 1] = NULL;
 	}
-	argv[i] = NULL;
+	else
+		argv[1] = NULL;
 	return (argv);
 }
 

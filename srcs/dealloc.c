@@ -1,6 +1,6 @@
 # include "../minishell.h"
 
-void	pipe_free_fd_close(int **pipe_book)
+void	pipe_free(int **pipe_book)
 {
 	int i;
 
@@ -18,7 +18,7 @@ void	pipe_free_fd_close(int **pipe_book)
 	}
 }
 
-void	redi_fd_close(t_info *info)
+void	redi_free(t_info *info)
 {
 	t_cmd *cur;
 
@@ -28,11 +28,16 @@ void	redi_fd_close(t_info *info)
 		if (cur->redi_in)
 		{
 			close(cur->fd_in);
-			//if (ft_stdcmp(cur->redi_in, "<<") == 0)
-			//	unlink(cur->redi_in_arg);
+			if (cur->input_file)
+			{
+				unlink(cur->input_file);
+				free(cur->input_file);
+				cur->input_file = NULL;
+			}
 		}
 		if (cur->redi_out)
 			close(cur->fd_out);
+		cur = cur->next;
 	}
 }
 
@@ -66,19 +71,18 @@ void	reset_free(t_info *info)
 
 	two_dimen_str_free(info->token);
 	info->token = NULL;
+
 	two_dimen_str_free(info->quote_book);
 	info->quote_book = NULL;
-	//pipe_free(info->pipe_book);
-	// redi_free(info)
+
+	redi_free(info);
+	pipe_free(info->pipe_book);
+
 	cur = info->cmd_head;
 	while (cur)
 	{
 		ft_free(&cur->arg);
-		if (cur->redi_in > 0)
-			close(cur->fd_in);
-		if (cur->redi_out > 0)
-			close(cur->fd_out);
-
+		
 		tmp = cur;
 		cur = cur->next;
 		free(tmp);

@@ -44,10 +44,13 @@ t_cmd	*creat_cmd_struct(t_info *info)
 	cmd->cmd = NULL;
 	cmd->opt = '\0';
 	cmd->arg = NULL;
+	cmd->arg_token = NULL;
 
 	cmd->redi_in = NULL;
-	cmd->redi_out = NULL;
 	cmd->redi_in_arg = NULL;
+	cmd->input_file = NULL;
+
+	cmd->redi_out = NULL;
 	cmd->redi_out_arg = NULL;
 
 	cmd->fd_in = 0;
@@ -88,15 +91,13 @@ int	is_cmd(t_info *info, char *token)
 int	is_redi(t_info *info, char *token)
 {
 	int	i;
-	int	len;
 
+	if (ft_strlen(token) == 0)
+			return (RET_FALSE);
 	i = 0;
 	while (info->redi_book[i])
 	{
-		len = ft_strlen(token);
-		if (len == 0)
-			return (RET_FALSE);
-		if (ft_strncmp(token, info->redi_book[i], len) == 0)
+		if (ft_strcmp(token, info->redi_book[i]) == 0)
 			return (RET_TRUE);
 		i++;
 	}

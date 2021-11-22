@@ -80,6 +80,9 @@ void	main_routine(t_info *info)
 	make_all_pipe(info);// 모든 파이프를 생성, (info->pipe_book)
 		//print_pipe_book(info);
 	
+	if (set_redi_io(info) == RET_FALSE)
+		return ;
+
 	make_child(info);
 		//print_child(info);
 }

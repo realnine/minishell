@@ -32,7 +32,7 @@ char	*cut_env_name(char *arg, int *i, t_info *info)
 	char	*res;
 
 	len = 0;
-	while (arg[len] && (ft_isalpha(arg[len]) || arg[len] == '_'))
+	while (arg[len] && (ft_isalpha(arg[len]) || arg[len] == '_' || arg[len] == '?'))
 		len++;
 	res = (char *)malloc(sizeof(char) * (len + 1));
 	if (!res)
@@ -43,7 +43,7 @@ char	*cut_env_name(char *arg, int *i, t_info *info)
 	return (res);
 }
 //echo $HOME eeee ERROR
-void	ft_echo(t_info *info, t_cmd *cur) //echo $? 만들기
+void	ft_echo(t_info *info, t_cmd *cur) //echo -n (null) 처리 Test
 {
 	char	*env_val;
 	char	*str;
@@ -54,19 +54,26 @@ void	ft_echo(t_info *info, t_cmd *cur) //echo $? 만들기
 	str = NULL;
 	env_val = NULL;
 	name = NULL;
-	while (cur->arg[++i])
+	if (!cur->arg)
+		str = ft_strdup("");
+	else
 	{
-		if (cur->arg[i] == '$' && cur->arg[i + 1] && cur->arg[i + 1] != '\0')
+		while (cur->arg[++i])
 		{
-			i++;
-			name = cut_env_name(cur->arg + i, &i, info);
-			env_val = find_env_val(name, info->envp);
-			if (env_val)
-				str = ft_strjoin_free(str, env_val, 1);
-			ft_free(&name);
+			if (cur->arg[i] == '$' && cur->arg[i + 1] && cur->arg[i + 1] != '\0')
+			{
+				i++;
+				name = cut_env_name(cur->arg + i, &i, info);
+				env_val = find_env_val(name, info->envp);
+				if (!ft_strcmp("?", name))
+					str = ft_strjoin_free(str, ft_itoa(g_ret_number), 3);
+				else if (env_val)
+					str = ft_strjoin_free(str, env_val, 1);
+				ft_free(&name);
+			}
+			else
+				str = ft_charjoin(str, cur->arg[i]);
 		}
-		else
-			str = ft_charjoin(str, cur->arg[i]);
 	}
 	ft_putstr_fd(str, cur->fd_out);
 	if (cur->opt != 'n')
