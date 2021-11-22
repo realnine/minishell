@@ -60,11 +60,12 @@ void	main_routine(t_info *info)
 
 	if (info->line[0] == '\0')
 		return ;
-
+		
 	// quote " ' 처리
 	if (parse_quote(info) == RET_FALSE)
 		return ;
 		//print_quote(info);
+
 
 	make_token(info);
 		//print_token(info->token);

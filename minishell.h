@@ -86,9 +86,9 @@ void	normal_exit(char *msg, t_info *info);
 void	child_exit(t_info *info, t_cmd *cur, int ret);
 
 
-char	*insert_space(char *src, char *sep, t_info *info);
-void	make_token(t_info *info);
+//char	*insert_space(char *src, char *sep, t_info *info);
 int		parse_quote(t_info *info);
+void	make_token(t_info *info);
 void	make_child(t_info *info);
 
 int		make_cmd_lst(t_info *info, char **token);

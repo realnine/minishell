@@ -82,10 +82,15 @@ void	reset_free(t_info *info)
 	while (cur)
 	{
 		ft_free(&cur->arg);
-		
+
+		free(cur->arg_token);
+		cur->arg_token = NULL;
+
 		tmp = cur;
 		cur = cur->next;
 		free(tmp);
+
+		
 	}
 	info->cmd_head = NULL;
 }

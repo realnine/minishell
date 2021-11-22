@@ -4,6 +4,8 @@ char	*first_quote(char *p1)
 {
 	while (*p1)
 	{
+		if (*p1 == '\\' && (*(p1 + 1) == '\"' || *(p1 + 1) == '\''))
+			p1 += 2;
 		if (*p1 == '\"' || *p1 == '\'')
 			return (p1);
 		p1++;
@@ -15,6 +17,8 @@ char	*second_quote(char *p2, char c)
 {
 	while (*p2)
 	{
+		if (*p2 == '\\' && (*(p2 + 1) == '\"' || *(p2 + 1) == '\''))
+			p2 += 2;
 		if (*p2 == c)
 			return (p2);
 		p2++;
@@ -62,7 +66,8 @@ void	cut_quote_buf(t_info *info)
 		{
 			if (p1 == p2)
 				break ;
-			info->quote_book[i][j++] = *p1;
+			if (*p1 != '\\')
+				info->quote_book[i][j++] = *p1;
 			*p1 = '0';
 		}
 		i++;

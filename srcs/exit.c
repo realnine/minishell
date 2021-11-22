@@ -5,7 +5,7 @@ void	error_exit(char *msg, t_info *info)
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd("\n", 2);
 	exit_free(info);
-	//system("leaks minishell | grep leaked");
+	system("leaks minishell | grep leaked");
 	exit(1);
 }
 
@@ -14,7 +14,7 @@ void	normal_exit(char *msg, t_info *info)
 	ft_putstr_fd(msg, 1);
 	ft_putstr_fd("\n", 1);
 	exit_free(info);
-	//system("leaks minishell | grep leaked");
+	system("leaks minishell | grep leaked");
 	exit(0);
 }
 

@@ -88,9 +88,11 @@ void	put_arg(t_info *info, t_cmd *cur, int i)
 		cur->arg = ft_strjoin2(cur->arg, " ", info->token[i]);
 		free(tmp);
 	}
+	
 	cur->arg_token = add_arg_token(cur->arg_token, info->token[i]);
 	if (!cur->arg_token)
 		error_exit("malloc error\n", info);
+	
 }
 
 void	set_arg(t_info *info, t_cmd *cur)
@@ -100,6 +102,7 @@ void	set_arg(t_info *info, t_cmd *cur)
 
 	cmd = 0;
 	i = cur->token1;
+	
 	while (info->token[i] && i <= cur->token2)
 	{
 		if (is_cmd(info, info->token[i]) == RET_TRUE && cmd == 0)
@@ -114,6 +117,7 @@ void	set_arg(t_info *info, t_cmd *cur)
 			put_arg(info, cur, i);
 		i++;
 	}
+	
 }
 
 void	set_cmd_lst(t_info *info)
