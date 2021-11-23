@@ -69,7 +69,7 @@ int	syntax_check_cmd(t_info *info, char **token)
 			}
 		}
 		else
-			return(error_print(token[i], msg, NULL, info));
+			return(error_print(token[i], msg, NULL, 1));
 	}
 	return (RET_TRUE);
 }

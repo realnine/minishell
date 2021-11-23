@@ -31,6 +31,7 @@ char	*cut_env_name(char *arg, int *i, t_info *info)
 	int	len;
 	char	*res;
 
+	(void)info;
 	len = 0;
 	while (arg[len] && (ft_isalpha(arg[len]) || arg[len] == '_' || arg[len] == '?'))
 		len++;

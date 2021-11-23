@@ -134,6 +134,7 @@ int	dir_move(char *path, char ***envp, t_info *info)
 	char	*ck_env;
 	char	buf[PATH_MAX];
 
+	(void)info;
 	ret = chdir(path);
 	if (ret == -1)
 		return(error_print("cd", strerror(errno), NULL, 1));

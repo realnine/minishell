@@ -66,8 +66,8 @@ void	cut_quote_buf(t_info *info)
 		{
 			if (p1 == p2)
 				break ;
-			if (*p1 != '\\')
-				info->quote_book[i][j++] = *p1;
+			//if (*p1 != '\\')
+			info->quote_book[i][j++] = *p1;
 			*p1 = '0';
 		}
 		i++;

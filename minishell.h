@@ -140,7 +140,7 @@ int		ft_cd(t_info *info, t_cmd *cur);
 //echo.c
 char	*ft_strjoin_free(char *s1, char *s2, int flag);
 char	*cut_env_name(char *arg, int *i, t_info *info);
-void	ft_echo(t_info *info, t_cmd *cur);
+int		ft_echo(t_info *info, t_cmd *cur);
 //env.c
 int		env_denied(t_info *info, char *arg);
 int		ft_env(t_info *info, t_cmd *cur);
@@ -153,7 +153,7 @@ int		ft_strslen(char **strs);
 int		is_export_normal(char *arg);
 char	**copy_envp(char **envp, int add);
 char	**sort_export(char **envp);
-void	set_export_print(t_cmd *cur, char **envp, t_info *info);
+int		set_export_print(t_cmd *cur, char **envp, t_info *info);
 char	*ft_charjoin(char *str, char c);
 char	*export_etc(char *arg, char **envp, char *str, t_info *info);
 int		is_exist_env(char *name, char **envp);
