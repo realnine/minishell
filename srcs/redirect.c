@@ -1,23 +1,14 @@
 # include "../minishell.h"
 
-int	open_err_exit(char *redi, char *arg)
-{
-	printf("in redi erro '%s'\n", redi);
-	printf("	arg : [%s]\n", arg);
-	err_print(strerror(errno));
-	printf("\n");
-	return (RET_FALSE);
-}
-
 int	input_multiline(t_cmd *cmd)
 {
 	char *buf;
 
 	// 멀티라인 입력 모드
-	cmd->fd_in = open("tmp_redi_multiline", O_RDWR | O_CREAT | O_APPEND, \
+	cmd->fd_in = open("tmp_redi_multiline", O_RDWR | O_CREAT, \
 			S_IRWXU | S_IRWXG | S_IRWXO);
 	if (cmd->fd_in < 0)
-		return (open_err_exit("<<", cmd->redi_in_arg));
+		return (error_print(cmd->redi_in_arg, strerror(errno), NULL, 1));
 	cmd->input_file = ft_strdup("tmp_redi_multiline");
 	while (1)
 	{
@@ -44,7 +35,7 @@ int	redirect_in(t_cmd *cmd)
 		cmd->fd_in = open(cmd->redi_in_arg, O_RDWR, \
 				S_IRWXU | S_IRWXG | S_IRWXO);
 		if (cmd->fd_in < 0)
-			return (open_err_exit("<", cmd->redi_in_arg));
+			return (error_print(cmd->redi_in_arg, strerror(errno), NULL, 1));
 	}
 	return (RET_TRUE);
 }
@@ -56,14 +47,14 @@ int	redirect_out(t_cmd *cmd)
 		cmd->fd_out = open(cmd->redi_out_arg, O_RDWR | O_CREAT | O_APPEND, \
 			S_IRWXU | S_IRWXG | S_IRWXO);
 		if (cmd->fd_out < 0)
-			open_err_exit(">>", cmd->redi_out_arg);
+			return (error_print(cmd->redi_out_arg, strerror(errno), NULL, 1));
 	}
 	else
 	{
 		cmd->fd_out = open(cmd->redi_out_arg, O_RDWR | O_CREAT | O_TRUNC, \
 			S_IRWXU | S_IRWXG | S_IRWXO);
 		if (cmd->fd_out < 0)
-			open_err_exit(">", cmd->redi_out_arg);
+			return (error_print(cmd->redi_out_arg, strerror(errno), NULL, 1));
 	}
 	return (RET_TRUE);
 }
@@ -85,3 +76,13 @@ int	set_redi_io(t_info *info)
 	}
 	return (RET_TRUE);
 }
+
+/*
+int	open_err_exit(char *redi, char *arg)
+{
+	printf("in redi erro '%s'\n", redi);
+	printf("	arg : [%s]\n", arg);
+	err_print(strerror(errno), 1);
+	return (RET_FALSE);
+}
+*/

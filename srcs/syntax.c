@@ -11,14 +11,14 @@ int	syntax_check_pipe(char **token)
 		if (token[i][0] == '|')
 		{
 			if (i == 0)
-				return(err_print(msg));
+				return(err_print(msg, 258));
 			if (token[i + 1])
 			{
 				if (token[i + 1][0] == '|')
-					return(err_print(msg));
+					return(err_print(msg, 258));
 			}
 			else
-				err_print("mini: doesn't support pipe input");
+				err_print("mini: doesn't support pipe input", 258);
 		}
 		i++;
 	}
@@ -36,9 +36,9 @@ int	syntax_check_redi(t_info *info, char **token)
 		if (is_redi(info, token[i]) == RET_TRUE)
 		{
 			if (!token[i + 1])
-				return(err_print(msg));
+				return(err_print(msg, 258));
 			if (is_redi(info, token[i + 1]) == RET_TRUE)
-				return(err_print(msg));
+				return(err_print(msg, 258));
 		}
 		i++;
 	}
@@ -49,15 +49,15 @@ int	syntax_check_cmd(t_info *info, char **token)
 {
 	int		i;
 	int		num;
-	char	msg[] = "command not found";
+	char	msg[] = "command not Found";
 
 	i = 0;
 	num = 0;
 	while (token[i])
 	{
-		if (is_redi(info, token[i]) == RET_TRUE)
-			i += 2;
-		if (is_cmd(info, token[i]) == RET_TRUE)
+		if (is_cmd(info, token[i]) == RET_TRUE ||
+			is_path(token[i]) == RET_TRUE ||
+			is_redi(info, token[i]) == RET_TRUE)
 		{
 			while (token[++i])
 			{
@@ -69,7 +69,7 @@ int	syntax_check_cmd(t_info *info, char **token)
 			}
 		}
 		else
-			return(error_print(token[i], msg, NULL, 1));
+			return(error_print(token[i], msg, NULL, 127));
 	}
 	return (RET_TRUE);
 }

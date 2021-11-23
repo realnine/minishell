@@ -14,8 +14,9 @@
 	printf("\n\n");
 } */
 
-int		err_print(char *msg)
+int		err_print(char *msg, int ret)
 {
+	g_ret_number = ret;
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd("\n", 2);
 	return (RET_FALSE);

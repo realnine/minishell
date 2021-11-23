@@ -63,6 +63,35 @@ t_cmd	*creat_cmd_struct(t_info *info)
 	return (cmd);
 }
 
+int	is_path(char *token)
+{
+	int	i;
+
+	i = 0;
+	while (token[i])
+	{
+		if (token[i++] == '/')
+			return (RET_TRUE);
+	}
+	return (RET_FALSE);
+}
+
+int	is_opt(char *token)
+{
+	int	i;
+
+	i = 0;
+	if (ft_strncmp(token, "-n", 2) == 0)
+	{
+		i = 2;
+		while (token[i] == 'n')
+			i++;
+		if (token[i] == '\0')
+			return (RET_TRUE);
+	}
+	return (RET_FALSE);
+}
+
 int	is_cmd(t_info *info, char *token)
 {
 	int	i;

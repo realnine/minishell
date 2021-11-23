@@ -1,21 +1,5 @@
 # include "../minishell.h"
 
-int		is_opt(char *token)
-{
-	int	i;
-
-	i = 0;
-	if (ft_strncmp(token, "-n", 2) == 0)
-	{
-		i = 2;
-		while (token[i] == 'n')
-			i++;
-		if (token[i] == '\0')
-			return (RET_TRUE);
-	}
-	return (RET_FALSE);
-}
-
 void	set_cmd(t_info *info, t_cmd *cur)
 {
 	int		i;
@@ -23,7 +7,8 @@ void	set_cmd(t_info *info, t_cmd *cur)
 	i = cur->token1;
 	while (i <= cur->token2)
 	{
-		if (is_cmd(info, info->token[i]) == RET_TRUE)
+		if (is_cmd(info, info->token[i]) == RET_TRUE ||
+			is_path(info->token[i]) == RET_TRUE)
 		{
 			cur->cmd = info->token[i];
 			if (is_opt(info->token[i + 1]) == RET_TRUE)

@@ -73,6 +73,8 @@ void    make_child(t_info *info)
 {
     t_cmd   *cur;
     pid_t   pid;
+	int		stat;
+
     cur = info->cmd_head;
     while (cur)
     {
@@ -86,7 +88,11 @@ void    make_child(t_info *info)
 					// 여긴 자식 프로세스를 분기한 부모 프로세스의 시그널을 세팅 하는 것에 의미가 있다
 					// 자식 프로세스는 execve()로 실행 로직이 교체될 때, 사라지고 시그널 세팅 정보도 사라짐
         	    create_child(info, cur);
-        	    pid = wait(NULL);
+        	    pid = wait(&stat);
+				g_ret_number = stat / 256;
+					// wait(&stat)에서 stat 값은 
+					// 자식 프로세스가 exit(ret) 으로 종료될 때
+					// ret 값에 +256 을 해서 따로 기록하는 것 같다
         	    printf("--------child exit(%d)-------\n", pid);
         	}
 		}

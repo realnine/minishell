@@ -23,7 +23,7 @@
 #define READ    0
 #define WRITE   1
 
-# define CMD		"cd echo env exit export pwd unset cat grep ls mkdir rm"
+# define CMD		"cd echo env exit export pwd unset cat grep ls sort wc mkdir rm"
 # define REDI		">> > << <"
 
 typedef struct s_cmd
@@ -107,6 +107,9 @@ t_cmd	*creat_cmd_struct(t_info *info);
 int		is_cmd(t_info *info, char *token);
 int		is_redi(t_info *info, char *token);
 int		is_arg(t_info *info, char *token);
+int		is_opt(char *token);
+int		is_path(char *token);
+
 int		**ft_malloc_int2(int len, t_info *info);
 int		*ft_malloc_int(int len, t_info *info);
 
@@ -117,7 +120,7 @@ void	print_token(char **token);
 void	print_quote(t_info *info);
 void	print_pipe_book(t_info *info);
 int 	error_print(char *s1, char *s2, char *s3, int ret);
-int		err_print(char *msg);
+int		err_print(char *msg, int ret);
 // redirection & pipe
 int		set_redi_io(t_info *info);
 void	make_all_pipe(t_info *info);

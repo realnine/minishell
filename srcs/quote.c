@@ -39,7 +39,7 @@ int	check_quote(t_info *info)
 			return (RET_TRUE);
 		p2 = second_quote(p1 + 1, *p1);
 		if (!p2)
-			return (err_print("mini: doesn't support quote multiline"));
+			return (err_print("mini: doesn't support quote multiline", 258));
 		info->num_quote++;
 		p1 = p2 + 1;
 	}
