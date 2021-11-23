@@ -36,48 +36,60 @@ char	*cut_env_name(char *arg, int *i, t_info *info)
 		len++;
 	res = (char *)malloc(sizeof(char) * (len + 1));
 	if (!res)
-		error_exit("malloc error\n", info);
+		error_print("malloc error", NULL, NULL, 0); //malloc error g_ret_number 값찾기
 	ft_memcpy(res, arg, len);
 	res[len] = '\0';
 	*i += len - 1;
 	return (res);
 }
-//echo $HOME eeee ERROR
-void	ft_echo(t_info *info, t_cmd *cur) //echo -n (null) 처리 Test
+
+char	*set_echo(t_info *info, char **token)
 {
-	char	*env_val;
-	char	*str;
+	char	*ret;
 	char	*name;
+	char	*env_val;
 	int	i;
+	int	j;
 
 	i = -1;
-	str = NULL;
-	env_val = NULL;
-	name = NULL;
-	if (!cur->arg)
-		str = ft_strdup("");
-	else
+	ret = NULL;
+	while (token[++i])
 	{
-		while (cur->arg[++i])
+		j = -1;
+		while (token[i][++j])
 		{
-			if (cur->arg[i] == '$' && cur->arg[i + 1] && cur->arg[i + 1] != '\0')
+			if (token[i][j] == '$' && token[i][j + 1] && token[i][j + 1] != '\0')
 			{
-				i++;
-				name = cut_env_name(cur->arg + i, &i, info);
+				j++;
+				name = cut_env_name(token[i] + j, &j, info);
 				env_val = find_env_val(name, info->envp);
 				if (!ft_strcmp("?", name))
-					str = ft_strjoin_free(str, ft_itoa(g_ret_number), 3);
+					ret = ft_strjoin_free(ret, ft_itoa(g_ret_number), 3);
 				else if (env_val)
-					str = ft_strjoin_free(str, env_val, 1);
+					ret = ft_strjoin_free(ret, env_val, 1);
 				ft_free(&name);
 			}
 			else
-				str = ft_charjoin(str, cur->arg[i]);
+				ret = ft_charjoin(ret, token[i][j]);
 		}
+		ret = ft_charjoin(ret, ' ');
 	}
+	return (ret);
+}
+
+int	ft_echo(t_info *info, t_cmd *cur)
+{
+	char	*str;
+
+	str = NULL;
+	if (!cur->arg_token[0]) //될까?
+		str = ft_strdup("");
+	else
+		str = set_echo(info, cur->arg_token);
 	ft_putstr_fd(str, cur->fd_out);
 	if (cur->opt != 'n')
 		ft_putchar_fd('\n', cur->fd_out);
 	ft_free(&str);
 	g_ret_number = 0; //추추
+	return (RET_TRUE);
 }

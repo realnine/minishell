@@ -123,23 +123,18 @@ void	print_cmd(t_cmd *cur)
 	printf("=======================\n");
 }
 
-int error_print(char *s1, char *s2, char *s3, t_info *info)
+int error_print(char *s1, char *s2, char *s3, int ret)
 {
-	char	*tmp;
-
-	g_ret_number = info->code; //추추
-	tmp = ft_strdup("minishell: ");
-	tmp = ft_strjoin(tmp, s1);
-	tmp = ft_strjoin(tmp, ": ");
-	tmp = ft_strjoin(tmp, s2);
+	g_ret_number = ret; //추추
+	ft_putstr_fd("mini: ", 2);
+	ft_putstr_fd(s1, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(s2, 2);
 	if (s3)
 	{
-		tmp = ft_strjoin(tmp, ": ");
-		tmp = ft_strjoin(tmp, s3);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(s3, 2);
 	}
-	tmp = ft_charjoin(tmp, '\n');
-	ft_putstr_fd(tmp, 2);
 	ft_putchar_fd('\n', 2);
-	//error_exit(tmp, info);
 	return (RET_FALSE);
 }

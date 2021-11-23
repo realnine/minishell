@@ -1,5 +1,6 @@
 #include "../../minishell.h"
-
+//g_ret_number
+//arg ck
 int	is_designate(char *arg)
 {
 	return (!arg || !ft_strcmp("~", arg) || !ft_strcmp("~/", arg) || !ft_strcmp("-", arg) || !ft_strncmp("$", arg, 1));
@@ -29,10 +30,7 @@ int	dir_home(char *path, char *arg, t_info *info)
 	if (!env_val)
 	{
 		if (!arg)
-		{
-			info->code = 1; //추추
-			return (error_print("cd", "HOME not set", NULL, info)); //error_print 인자 생각해보기
-		}
+			return (error_print("cd", "HOME not set", NULL, 1)); //error_print 인자 생각해보기
 	}
 	else
 	{
@@ -49,10 +47,7 @@ int	dir_oldpwd(t_cmd *cur, char *path, t_info *info)
 
 	env_val = find_env_val("OLDPWD", info->envp);
 	if (!env_val)
-	{
-		info->code = 1; //추추
-		return (error_print("cd", "OLDPWD not set", NULL, info)); //error_print
-	}
+		return (error_print("cd", "OLDPWD not set", NULL, 1)); //error_print
 	len = ft_strlen(env_val);
 	ft_putstr_fd(env_val, cur->fd_out);
 	ft_putstr_fd("\n", cur->fd_out);
@@ -141,15 +136,12 @@ int	dir_move(char *path, char ***envp, t_info *info)
 
 	ret = chdir(path);
 	if (ret == -1)
-	{
-		info->code = 1; //추추
-		return(error_print("cd", strerror(errno), NULL, info)); //error_pirnt
-	}
+		return(error_print("cd", strerror(errno), NULL, 1));
 	tmp = find_env_val("PWD", *envp);
 	getcwd(buf, PATH_MAX);
 	ck_env = find_env_val("OLDPWD", *envp);
 	if (!ck_env)
-		*envp = add_env(*envp, ft_strjoin("OLDPWD=", tmp)); //ㅅㅜ저ㅇㅇ
+		*envp = add_env(*envp, ft_strjoin("OLDPWD=", tmp));
 	else
 		ft_strlcpy(find_env_val("OLDPWD", *envp), tmp, ft_strlen(tmp) + 1);
 	ft_strlcpy(tmp, buf, ft_strlen(buf) + 1);

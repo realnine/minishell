@@ -13,13 +13,10 @@ int	env_denied(t_info *info, char *arg)
 			i++;
 			env_val = find_env_val(arg + i, info->envp);
 			if (env_val != NULL)
-			{
-				info->code = 126;
-				return (error_print("env", env_val, "Permission denied", info));
-			}
+				return (error_print("env", env_val, "Permission denied", 126));
 		}
 	}
-	return (error_print("env", arg, "No such file or directory", info));
+	return (error_print("env", arg, "No such file or directory", 0)); //숫자
 }
 
 int	ft_env(t_info *info, t_cmd *cur)

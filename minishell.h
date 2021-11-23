@@ -59,7 +59,7 @@ typedef struct s_info
 	char	*line;
 	char	**token;
 	char	**quote_book;
-	//char	*quote_buf;
+	int		idx_q;
 	int		num_quote;
 
 	char	**cmd_book;
@@ -89,6 +89,8 @@ void	child_exit(t_info *info, t_cmd *cur, int ret);
 //char	*insert_space(char *src, char *sep, t_info *info);
 int		parse_quote(t_info *info);
 void	make_token(t_info *info);
+//char	*insert_space_quote(t_info *info);
+void	replace_quote(t_info *info);
 void	make_child(t_info *info);
 
 int		make_cmd_lst(t_info *info, char **token);
@@ -114,7 +116,7 @@ void	print_cmd_lst(t_info *info);
 void	print_token(char **token);
 void	print_quote(t_info *info);
 void	print_pipe_book(t_info *info);
-int		error_print(char *s1, char *s2, char *s3, t_info *info);
+int 	error_print(char *s1, char *s2, char *s3, int ret);
 int		err_print(char *msg);
 // redirection & pipe
 int		set_redi_io(t_info *info);

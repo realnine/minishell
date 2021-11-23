@@ -17,7 +17,7 @@ void	exit_arg(t_info *info, t_cmd *cur, int *ret_num)
 		if (!ft_isdigit(cur->arg[i]))
 		{
 			info->code = 255;
-			error_print("exit", cur->arg, "numeric argument required", info);
+			error_print("exit", cur->arg, "numeric argument required", 255);
 			exit(255);
 		}
 		i++;
@@ -37,7 +37,7 @@ void	ft_exit(t_info *info, t_cmd *cur) //추추
 		while (cur->arg[++i])
 		{
 			if (ft_isspace(cur->arg[i]))
-				error_print("exit", "too many arguments", NULL, info);
+				error_print("exit", "too many arguments", NULL, 1);
 		}
 		exit_arg(info, cur, &ret_num);
 	}

@@ -68,7 +68,8 @@ void	reset_free(t_info *info)
 	t_cmd	*tmp;
 
 	ft_free(&info->line);
-
+	info->num_quote = 0;
+	info->idx_q = 0;
 	two_dimen_str_free(info->token);
 	info->token = NULL;
 

@@ -25,42 +25,20 @@ int	is_export_normal(char *arg)
 	return (-1);
 }
 
-char	**copy_envp(char **envp, int add)
-{
-	char	**new;
-	int	i;
-
-	i = ft_strslen(envp);
-	new = (char **)malloc(sizeof(char *) * (i + add));
-	if (!new)
-		return (NULL);//에러 문장 보내기
-	i = -1;
-	while (envp[++i])
-		new[i] = envp[i];
-	new[i] = NULL;
-	return (new);
-}
-
-char	**sort_export(char **envp)// 포인ㄴ터 개 난장판~ 정렬 수정하기
+char	**sort_export(char **envp)
 {
 	char	**copy;
 	char	*tmp;
 	int		i;
 	int		j;
 
-	copy = (char **)malloc(sizeof(char) * (ft_strslen(envp) + 1));
+	copy = (char **)malloc(sizeof(char *) * (ft_strslen(envp) + 1));
+	if (!copy)
+		return (NULL);
 	i = -1;
 	while (envp[++i])
 		copy[i] = ft_strdup(envp[i]);
 	copy[i] = NULL;
-	i = -1;
-	while (copy[++i])
-	{
-		printf("copy = [%s]\n", copy[i]);
-	} //왜깨져,,?
-	
-	// copy = copy_envp(envp, 1);
-	// i = ft_strslen(envp);
 	while (--i > 0)
 	{
 		j = 0;
@@ -68,7 +46,6 @@ char	**sort_export(char **envp)// 포인ㄴ터 개 난장판~ 정렬 수정하�
 		{
 			if (ft_strcmp(copy[j], copy[j + 1]) > 0)
 			{
-				printf("here\n");
 				tmp = copy[j + 1];
 				copy[j + 1] = copy[j];
 				copy[j] = tmp;
@@ -79,39 +56,35 @@ char	**sort_export(char **envp)// 포인ㄴ터 개 난장판~ 정렬 수정하�
 	return (copy);
 }
 
-void	set_export_print(t_cmd *cur, char **envp, t_info *info)
+int	set_export_print(t_cmd *cur, char **envp, t_info *info)
 {
 	char	**sorted;
-	// char	*env_val;
-	// char	*env_name;
+	char	*env_val;
+	char	*env_name;
 	int	i;
-	// int	trash;
+	int	trash;
 
 	sorted = sort_export(envp);
 	i = -1;
-	printf("=============================\n");
 	while (sorted[++i])
 	{
-		printf("%d = [%s]\n", i, sorted[i]);
-		ft_free(&sorted[i]);
+		ft_putstr_fd("declare -x ", cur->fd_out);
+		env_name = cut_env_name(sorted[i], &trash, info); //trash?
+		ft_putstr_fd(env_name, cur->fd_out);
+		env_val = find_env_val(env_name, sorted);
+		ft_putstr_fd("=\"", cur->fd_out); //export HHH= 과 export HHH 는 다르다,,,,(수정)
+		ft_putstr_fd(env_val, cur->fd_out);
+		ft_putchar_fd('\"', cur->fd_out);
+		ft_putchar_fd('\n', cur->fd_out);
+		ft_free(&env_name);
+		env_val = NULL;
 	}
-	(void)info;
-	(void)cur;
-	// while (sorted[++i])
-	// {
-	// 	ft_putstr_fd("declare -x ", cur->fd_out);
-	// 	env_name = cut_env_name(sorted[i], &trash, info); //trash?
-	// 	ft_putstr_fd(env_name, cur->fd_out);
-	// 	env_val = find_env_val(env_name, sorted);
-	// 	ft_putstr_fd("=\"", cur->fd_out); //export HHH= 과 export HHH 는 다르다,,,,(수정)
-	// 	ft_putstr_fd(env_val, cur->fd_out);
-	// 	ft_putchar_fd('\"', cur->fd_out);
-	// 	ft_putchar_fd('\n', cur->fd_out);
-	// 	// ft_free(&sorted[i]);
-	// 	ft_free(&env_name);
-	// }
+	i = -1;
+	while(sorted[++i])
+		ft_free(&sorted[i]);
 	free(sorted);
 	sorted = NULL;
+	return (RET_TRUE);
 }
 
 char	*ft_charjoin(char *str, char c)
@@ -207,34 +180,18 @@ int	add_export(char *arg, char ***envp, t_info *info)
 int	ft_export(t_info *info, t_cmd *cur)
 {
 	int	i;
-	char	*tmp;
 
-	tmp = NULL;
+	i = -1;
 	if (!cur->arg)
-		set_export_print(cur, info->envp, info);
+		return (set_export_print(cur, info->envp, info));
 	else
 	{
-		i = -1;
-		while (cur->arg[++i])
+		while (cur->arg_token[++i])
 		{
-			while (cur->arg[i] && cur->arg[i] != ' ')
-				tmp = ft_charjoin(tmp, cur->arg[i++]);
-			if (!tmp || (tmp[0] != '_' && !ft_isalnum(tmp[0])))//tmp 존재하지 않을떄??
-			{
-				info->code = 1;
-				return (error_print("export", cur->arg, strerror(errno), info));
-			}
-			add_export(tmp, &info->envp, info);
-			ft_free(&tmp);
+			if (cur->arg_token[i][0] != '_' && !ft_isalnum(cur->arg_token[i][0]))
+				return (error_print("export", cur->arg, strerror(errno), 1));
+			add_export(cur->arg_token[i], &info->envp, info);
 		}
-		
-		// if (cur->arg[0] != '_' && !ft_isalnum(cur->arg[0])) //env 조건 확인
-		// {
-		// 	info->code = 1; //추추
-		// 	// return (error_print("export", cur->arg, "not a valid identifier", info));
-		// 	return (error_print("export", cur->arg, strerror(errno), info));
-		// }
-		// add_export(cur, &info->envp, info);
 	}
 	g_ret_number = 0;
 	return (RET_TRUE);

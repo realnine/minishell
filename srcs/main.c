@@ -14,7 +14,7 @@ void	init_info(t_info *info)
 	info->token = NULL;
 	info->num_quote = 0;
 	info->quote_book = NULL;
-	//info->quote_buf = NULL;
+	info->idx_q = 0;
 }
 
 void	prompt(t_info *info)

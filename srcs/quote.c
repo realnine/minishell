@@ -39,7 +39,7 @@ int	check_quote(t_info *info)
 			return (RET_TRUE);
 		p2 = second_quote(p1 + 1, *p1);
 		if (!p2)
-			return (err_print("mini: quote multiline error"));
+			return (err_print("mini: doesn't support quote multiline"));
 		info->num_quote++;
 		p1 = p2 + 1;
 	}
@@ -60,7 +60,7 @@ void	cut_quote_buf(t_info *info)
 		p2 = second_quote(p1 + 1, *p1);
 		info->quote_book[i] = (char *)calloc(p2 - p1, sizeof(char));
 		if (!info->quote_book[i])
-			error_exit("malloc error\n", info);
+			error_exit("malloc error", info);
 		j = 0;
 		while (++p1 < p2)
 		{
@@ -87,12 +87,11 @@ int	parse_quote(t_info *info)
 		// info->num_quote 개수에 맞게 info->quote_buf 2중 배열을 할당한다
 		info->quote_book = (char **)malloc(sizeof(char *) * (info->num_quote + 1));
 		if (!info->quote_book)
-			error_exit("malloc error\n", info);
+			error_exit("malloc error", info);
 		info->quote_book[info->num_quote] = NULL;
 
 		// qoute내용을 info->quote_buf 에 담는다
 		cut_quote_buf(info);
 	}
-	info->num_quote = 0;
 	return (RET_TRUE);
 }

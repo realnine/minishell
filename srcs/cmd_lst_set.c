@@ -1,9 +1,24 @@
 # include "../minishell.h"
 
+int		is_opt(char *token)
+{
+	int	i;
+
+	i = 0;
+	if (ft_strncmp(token, "-n", 2) == 0)
+	{
+		i = 2;
+		while (token[i] == 'n')
+			i++;
+		if (token[i] == '\0')
+			return (RET_TRUE);
+	}
+	return (RET_FALSE);
+}
+
 void	set_cmd(t_info *info, t_cmd *cur)
 {
 	int		i;
-	int		j;
 
 	i = cur->token1;
 	while (i <= cur->token2)
@@ -11,14 +26,8 @@ void	set_cmd(t_info *info, t_cmd *cur)
 		if (is_cmd(info, info->token[i]) == RET_TRUE)
 		{
 			cur->cmd = info->token[i];
-			if (ft_strncmp(info->token[i + 1], "-n", 2) == 0)
-			{
-				j = 2;
-				while (info->token[i + 1][j] == 'n')
-					j++;
-				if (info->token[i + 1][j] == '\0')
-					cur->opt = 'n';
-			}
+			if (is_opt(info->token[i + 1]) == RET_TRUE)
+				cur->opt = 'n';
 			return ;
 		}
 		else if (is_redi(info, info->token[i]) == RET_TRUE)
@@ -108,14 +117,14 @@ void	set_arg(t_info *info, t_cmd *cur)
 		if (is_cmd(info, info->token[i]) == RET_TRUE && cmd == 0)
 		{
 			cmd = 1;
-			if (cur->opt == 'n')
-				i += 1; // opt 토큰도 건너 뛰도록
+			i++;
+			while (is_opt(info->token[i]) == RET_TRUE)
+				i++; // opt 토큰
 		}
 		else if (is_redi(info, info->token[i]) == RET_TRUE)
-			i += 1; // redi_arg 토큰도 건너 뛰도록
+			i += 2; // redi커맨랑 인자까지 
 		else
-			put_arg(info, cur, i);
-		i++;
+			put_arg(info, cur, i++);
 	}
 	
 }

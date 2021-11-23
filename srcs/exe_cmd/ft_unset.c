@@ -43,10 +43,8 @@ int	remove_env(char ***envp, int pos)
 	while ((*envp)[++i])
 		if (i == pos)
 		{
-			printf("herer\n");
 			ft_free(&(*envp)[i]);
 			(*envp)[i] = ft_strdup((*envp)[last - 1]);
-			printf("her222er\n");
 			ft_free(&(*envp)[last - 1]);
 			return (RET_TRUE);
 		}
@@ -69,14 +67,16 @@ int	ft_unset(t_info *info, t_cmd *cur) //malloc error (export HHH ABC=123 -> exp
 			tmp = ft_charjoin(tmp, cur->arg[i++]);
 		if (!tmp || (tmp[0] != '_' && !ft_isalnum(tmp[0]))) //tmp존재하지 않을떄?
 		{
-			info->code = 1;
-			return (error_print("unset", cur->arg, "not a valid identifier", info));
+			ft_free(&tmp);
+			return (error_print("unset", cur->arg, "not a valid identifier", 1));
 		}
 		env_pos = is_exist_env(tmp, info->envp);
 		ft_free(&tmp);
 		if (env_pos == -1)
 			return (RET_FALSE); //그냥 종료
 		remove_env(&info->envp, env_pos);
+		if (!cur->arg[i])
+			break ;
 	}
 	g_ret_number = 0;
 	return (RET_TRUE);
