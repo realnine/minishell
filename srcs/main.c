@@ -68,7 +68,7 @@ void	main_routine(t_info *info)
 
 
 	make_token(info);
-		//print_token(info->token);
+		print_token(info->token);
 		
 	if (syntax_check(info) == RET_FALSE)
 		return ;

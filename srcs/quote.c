@@ -58,20 +58,18 @@ void	cut_quote_buf(t_info *info)
 	{
 		p1 = first_quote(p1);
 		p2 = second_quote(p1 + 1, *p1);
-		info->quote_book[i] = (char *)calloc(p2 - p1, sizeof(char));
+		info->quote_book[i] = (char *)calloc(p2 - p1 + 2, sizeof(char));
 		if (!info->quote_book[i])
 			error_exit("malloc error", info);
 		j = 0;
-		while (++p1 < p2)
+		while (p1 <= p2)
 		{
-			if (p1 == p2)
-				break ;
-			//if (*p1 != '\\')
 			info->quote_book[i][j++] = *p1;
-			*p1 = '0';
+			if (*p1 != '\'' && *p1 != '\"')
+				*p1 = '0';
+			p1++;
 		}
 		i++;
-		p1 = p2 + 1;
 	}
 }
 

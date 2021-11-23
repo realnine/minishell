@@ -17,7 +17,7 @@ static void	replace_q(t_info *info, char *token)
 			q = info->idx_q;
 			while (info->quote_book[q][k])
 				token[j++] = info->quote_book[q][k++];
-			i += (k + 2);
+			i += k;
 			k = 0;
 			info->idx_q += 1;
 		}
