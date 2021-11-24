@@ -9,7 +9,8 @@ RL_FLAG		= -L /Users/jinglee/.brew/opt/readline/lib -lreadline \
 				-I /Users/jinglee/.brew/opt/readline/include
 
 SRCS1		= child.c cmd_lst_set.c cmd_lst.c dealloc.c exit.c main.c pipe.c quote.c \
-				redirect.c signal.c syntax.c token.c token_u.c utils_print.c utils.c 
+				redirect.c signal.c syntax.c token.c token_u.c utils_print.c utils.c \
+				utils_print_err.c utils_is.c dealloc_u.c
 SRCS2		= ft_cd.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c ft_execve.c
 
 SRCS1_PATH	= $(addprefix srcs/, ${SRCS1})

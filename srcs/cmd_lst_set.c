@@ -1,4 +1,4 @@
-# include "../minishell.h"
+#include "../minishell.h"
 
 void	set_cmd(t_info *info, t_cmd *cur)
 {
@@ -7,8 +7,8 @@ void	set_cmd(t_info *info, t_cmd *cur)
 	i = cur->token1;
 	while (i <= cur->token2)
 	{
-		if (is_cmd(info, info->token[i]) == RET_TRUE ||
-			is_path(info->token[i]) == RET_TRUE)
+		if (is_cmd(info, info->token[i]) == RET_TRUE
+			|| is_path(info->token[i]) == RET_TRUE)
 		{
 			cur->cmd = info->token[i];
 			if (is_opt(info->token[i + 1]) == RET_TRUE)
@@ -19,7 +19,6 @@ void	set_cmd(t_info *info, t_cmd *cur)
 			i += 2;
 	}
 }
-
 
 void	set_redi(t_info *info, t_cmd *cur)
 {
@@ -47,8 +46,8 @@ void	set_redi(t_info *info, t_cmd *cur)
 
 char	**add_arg_token(char **arg_token, char *arg)
 {
-	char **new;
-	int	i;
+	char	**new;
+	int		i;
 
 	new = (char **)malloc(sizeof(char *) * (ft_strslen(arg_token) + 2));
 	if (!new)
@@ -82,11 +81,9 @@ void	put_arg(t_info *info, t_cmd *cur, int i)
 		cur->arg = ft_strjoin2(cur->arg, " ", info->token[i]);
 		free(tmp);
 	}
-	
 	cur->arg_token = add_arg_token(cur->arg_token, info->token[i]);
 	if (!cur->arg_token)
 		error_exit("malloc error\n", info);
-	
 }
 
 void	set_arg(t_info *info, t_cmd *cur)
@@ -96,7 +93,6 @@ void	set_arg(t_info *info, t_cmd *cur)
 
 	cmd = 0;
 	i = cur->token1;
-	
 	while (info->token[i] && i <= cur->token2)
 	{
 		if (is_cmd(info, info->token[i]) == RET_TRUE && cmd == 0)
@@ -104,26 +100,11 @@ void	set_arg(t_info *info, t_cmd *cur)
 			cmd = 1;
 			i++;
 			while (is_opt(info->token[i]) == RET_TRUE)
-				i++; // opt 토큰
+				i++;
 		}
 		else if (is_redi(info, info->token[i]) == RET_TRUE)
-			i += 2; // redi커맨랑 인자까지 
+			i += 2;
 		else
 			put_arg(info, cur, i++);
-	}
-	
-}
-
-void	set_cmd_lst(t_info *info)
-{
-	t_cmd	*cur;
-
-	cur = info->cmd_head;
-	while (cur)
-	{
-		set_cmd(info, cur);
-		set_redi(info, cur);
-		set_arg(info, cur);
-		cur = cur->next;
 	}
 }

@@ -1,9 +1,9 @@
-# include "../minishell.h"
+#include "../minishell.h"
 
 int	get_sep_num(char *src, char *sep)
 {
 	int	num;
-	int sep_len;
+	int	sep_len;
 
 	num = 0;
 	sep_len = ft_strlen(sep);
@@ -26,7 +26,7 @@ int	get_sep_num(char *src, char *sep)
 
 void	insert_new_sep(char *dst, char *src, char *sep, char *new_sep)
 {
-	int sep_len;
+	int	sep_len;
 
 	sep_len = ft_strlen(sep);
 	while (*src)
@@ -48,9 +48,9 @@ void	insert_new_sep(char *dst, char *src, char *sep, char *new_sep)
 		}
 		*dst = *src;
 		dst++;
-		src++;	
+		src++;
 	}
-	*dst = '\0'; 
+	*dst = '\0';
 }
 
 char	*insert_space(char *src, char *sep, t_info *info)
@@ -76,21 +76,14 @@ char	*insert_space(char *src, char *sep, t_info *info)
 
 void	make_token(t_info *info)
 {
-	// 해당 명령어 사이에 공백 추가 (공백기준으로 분리하기 위함)
-	info->line = insert_space(info->line, "|", info); 
+	info->line = insert_space(info->line, "|", info);
 	info->line = insert_space(info->line, "<<", info);
 	info->line = insert_space(info->line, ">>", info);
 	info->line = insert_space(info->line, ">", info);
 	info->line = insert_space(info->line, "<", info);
-	//info->line = insert_space_quote(info);
-
-	// 공백을 기준으로 2차원 토큰 배열을 만든다
 	info->token = ft_split2(info->line, "\t\v\f\r ");
 	if (!info->token)
 		error_exit("split token error", info);
-
-	// quote 인자가 들어가야할 토큰에 다시 quote buf를 넣어준다 
-	// ex) ["000000"] => [hel lo]
 	replace_quote(info);
 	replace_g_ret(info);
 }

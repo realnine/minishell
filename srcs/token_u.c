@@ -1,39 +1,45 @@
-# include "../minishell.h"
+#include "../minishell.h"
 
-static void	replace_q(t_info *info, char *token)
+void	replace_qq(t_info *info, char *token, int *i, int *j)
 {
-	int	i;
-	int	j;
 	int	k;
 	int	q;
 
-	i = 0;
-	j = 0;
 	k = 0;
-	while (token[i])
+	while (token[(*i)])
 	{
-		if (token[i] == '\"' || token[i] == '\'')
+		if (token[(*i)] == '\"' || token[(*i)] == '\'')
 		{
 			q = info->idx_q;
 			while (info->quote_book[q][k])
-				token[j++] = info->quote_book[q][k++];
-			i += k;
+				token[(*j)++] = info->quote_book[q][k++];
+			(*i) += k;
 			k = 0;
 			info->idx_q += 1;
 		}
 		else
 		{
-			if (token[i] == '\\')
-				token[j++] = token[i++];
-			token[j++] = token[i++];
+			if (token[(*i)] == '\\')
+				token[(*j)++] = token[(*i)++];
+			token[(*j)++] = token[(*i)++];
 		}
 	}
-	token[j] = '\0';
+	token[(*j)] = '\0';
+}
+
+void	replace_q(t_info *info, char *token)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	replace_qq(info, token, &i, &j);
 }
 
 void	replace_quote(t_info *info)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (info->token[i])
@@ -68,7 +74,6 @@ void	replace_g_ret(t_info *info)
 {
 	int		i;
 	char	*ptr;
-	
 
 	if (!info->token)
 		return ;
@@ -78,7 +83,7 @@ void	replace_g_ret(t_info *info)
 		ptr = info->token[i];
 		while (*ptr)
 		{
-			if (ft_strncmp(ptr, "$?", 2)  == 0)
+			if (ft_strncmp(ptr, "$?", 2) == 0)
 			{
 				info->token[i] = str_cat(info, info->token[i], ptr);
 				ptr = info->token[i];
@@ -87,58 +92,4 @@ void	replace_g_ret(t_info *info)
 		}
 		i++;
 	}
-	
 }
-
-
-
-
-
-
-
-/*
-void	insert(char *new, char *line, int *first, int *i)
-{
-	if (*line == '\'' || *line == '\"')
-	{
-		if ((*first) == 0)
-		{
-			new[(*i)++] = ' ';
-			new[(*i)++] = *line;
-			(*first) = 1;
-		}
-		else
-		{
-			new[(*i)++] = *line;
-			new[(*i)++] = ' ';
-			(*first) = 0;
-		}
-	}
-	else
-		new[(*i)++] = *line;
-}
-
-char *insert_space_quote(t_info *info)
-{
-	char *new;
-	char *line;
-	int first;
-	int	i;
-
-	line = info->line;
-	i = ft_strlen(line) + 1 + ((info->num_quote) * 2);
-	new = (char *)calloc(i, sizeof(char));
-	if (!new)
-		error_exit("malloc error\n", info);
-	i = 0;
-	first = 0;
-	while(*line)
-	{
-		insert(new, line, &first, &i);
-		line++;
-	}
-	new[i] = '\0';
-	free(info->line);
-	return (new);
-}
-*/

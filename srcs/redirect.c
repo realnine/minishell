@@ -1,6 +1,5 @@
-# include "../minishell.h"
+#include "../minishell.h"
 
-// 멀티라인 입력 모드
 int	input_multiline(t_cmd *cmd)
 {
 	char	*buf;
@@ -66,7 +65,7 @@ int	redirect_out(t_cmd *cmd)
 
 int	set_redi_io(t_info *info)
 {
-	t_cmd *cur;
+	t_cmd	*cur;
 
 	cur = info->cmd_head;
 	while (cur)
@@ -81,13 +80,3 @@ int	set_redi_io(t_info *info)
 	}
 	return (RET_TRUE);
 }
-
-/*
-int	open_err_exit(char *redi, char *arg)
-{
-	printf("in redi erro '%s'\n", redi);
-	printf("	arg : [%s]\n", arg);
-	err_print(strerror(errno), 1);
-	return (RET_FALSE);
-}
-*/

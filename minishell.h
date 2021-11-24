@@ -20,16 +20,17 @@
 # define RET_FALSE	0
 
 // pipe fd[]
-#define READ    0
-#define WRITE   1
+# define READ	0
+# define WRITE	1
 
-# define CMD		"cd echo env exit export pwd unset cat grep ls sort wc mkdir rm expr"
-# define REDI		">> > << <"
+# define CMD	"cd echo env exit export pwd unset \
+	cat grep ls sort wc mkdir rm expr"
+# define REDI	">> > << <"
 
 typedef struct s_cmd
 {
-	int				token1; // 해당 cmd 의 info->token의 시작 인덱스
-	int				token2; // 해당 cmd 의 info->token의 마지막 인덱스
+	int				token1;
+	int				token2;
 
 	char			*cmd;
 	char			opt;
@@ -54,7 +55,6 @@ typedef struct s_cmd
 
 typedef struct s_info
 {
-	int		code; //추추 (error_print)에서 g_ret_number 처리하기 위해 좀 더 나은 방법 없나???고민해보기
 	char	**envp;
 	char	*line;
 	char	**token;
@@ -73,18 +73,13 @@ int	g_ret_number;
 // signal
 void	set_signal(int mode);
 
-// parse_utils
-
-
-
 //syntax_check
-int	syntax_check(t_info *info);
+int		syntax_check(t_info *info);
 
 // exit
 void	error_exit(char *msg, t_info *info);
 void	normal_exit(char *msg, t_info *info);
 void	child_exit(t_info *info, t_cmd *cur, int ret);
-
 
 int		parse_quote(t_info *info);
 
@@ -95,6 +90,9 @@ void	replace_g_ret(t_info *info);
 
 int		make_cmd_lst(t_info *info, char **token);
 void	set_cmd_lst(t_info *info);
+void	set_arg(t_info *info, t_cmd *cur);
+void	set_redi(t_info *info, t_cmd *cur);
+void	set_cmd(t_info *info, t_cmd *cur);
 
 void	make_child(t_info *info);
 
@@ -102,6 +100,7 @@ void	make_child(t_info *info);
 void	reset_free(t_info *info);
 void	exit_free(t_info *info);
 void	ft_free(char **ptr);
+void	two_dimen_str_free(char	**buf);
 
 // utils
 char	*strtrim_autofree(char *src, char *str, t_info *info);
@@ -117,17 +116,15 @@ int		*ft_malloc_int(int len, t_info *info);
 
 //utils_print
 void	print_child(t_info *info);
-void	print_cmd_lst(t_info *info); 
+void	print_cmd_lst(t_info *info);
 void	print_token(char **token);
 void	print_quote(t_info *info);
 void	print_pipe_book(t_info *info);
-int 	error_print(char *s1, char *s2, char *s3, int ret);
+int		error_print(char *s1, char *s2, char *s3, int ret);
 int		err_print(char *msg, int ret);
 // redirection & pipe
 int		set_redi_io(t_info *info);
 void	make_all_pipe(t_info *info);
-
-
 
 // ===============shell_ft=======================
 // cd.c
@@ -149,11 +146,11 @@ int		ft_echo(t_info *info, t_cmd *cur);
 //env.c
 
 int		env_denied(t_info *info, t_cmd *cur, char *arg);
-int	print_env(t_info *info, t_cmd *cur);
+int		print_env(t_info *info, t_cmd *cur);
 int		ft_env(t_info *info, t_cmd *cur);
 
 //exit.c
-int	ft_exit(t_cmd *cur);
+int		ft_exit(t_cmd *cur);
 
 //export.c
 int		ft_strslen(char **strs);
@@ -165,7 +162,7 @@ char	*ft_charjoin(char *str, char c);
 char	*export_etc(char *arg, char **envp, char *str);
 int		is_exist_env(char *name, char **envp);
 int		add_export(char *arg, char ***envp);
-int	valid_env_name(char *s, int flag);
+int		valid_env_name(char *s, int flag);
 int		ft_export(t_info *info, t_cmd *cur);
 
 //pwd.c

@@ -1,8 +1,8 @@
-# include "../minishell.h"
+#include "../minishell.h"
 
 void	pipe_free(t_info *info)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (info->pipe_book)
@@ -21,7 +21,7 @@ void	pipe_free(t_info *info)
 
 void	redi_free(t_info *info)
 {
-	t_cmd *cur;
+	t_cmd	*cur;
 
 	cur = info->cmd_head;
 	while (cur)
@@ -42,27 +42,6 @@ void	redi_free(t_info *info)
 	}
 }
 
-void	two_dimen_str_free(char	**buf)
-{
-	int	i;
-
-	if (!buf)
-		return ;
-	i = 0;
-	while (buf[i])
-	{
-		free(buf[i++]);
-	}
-	free(buf);
-}
-
-void	ft_free(char **ptr)
-{
-	if (*ptr)
-		free(*ptr);
-	*ptr = NULL;
-}
-
 void	reset_free(t_info *info)
 {
 	t_cmd	*cur;
@@ -73,26 +52,19 @@ void	reset_free(t_info *info)
 	info->idx_q = 0;
 	two_dimen_str_free(info->token);
 	info->token = NULL;
-
 	two_dimen_str_free(info->quote_book);
 	info->quote_book = NULL;
-
 	redi_free(info);
 	pipe_free(info);
-
 	cur = info->cmd_head;
 	while (cur)
 	{
 		ft_free(&cur->arg);
-
 		free(cur->arg_token);
 		cur->arg_token = NULL;
-
 		tmp = cur;
 		cur = cur->next;
 		free(tmp);
-
-		
 	}
 	info->cmd_head = NULL;
 }

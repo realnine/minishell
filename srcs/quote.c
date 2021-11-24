@@ -75,20 +75,17 @@ void	cut_quote_buf(t_info *info)
 
 int	parse_quote(t_info *info)
 {
-	// quote syntax check ( " '또는 ' " 인 경우,  " 또는 '만 있는 경우)
-	// quote 갯수 측정 (info->num_quote에 저장)
+	char	**tmp;
+
 	if (check_quote(info) == RET_FALSE)
 		return (RET_FALSE);
-
 	if (info->num_quote > 0)
 	{
-		// info->num_quote 개수에 맞게 info->quote_buf 2중 배열을 할당한다
-		info->quote_book = (char **)malloc(sizeof(char *) * (info->num_quote + 1));
+		tmp = (char **)malloc(sizeof(char *) * (info->num_quote + 1));
+		info->quote_book = tmp;
 		if (!info->quote_book)
 			error_exit("malloc error", info);
 		info->quote_book[info->num_quote] = NULL;
-
-		// qoute내용을 info->quote_buf 에 담는다
 		cut_quote_buf(info);
 	}
 	return (RET_TRUE);
