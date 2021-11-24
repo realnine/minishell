@@ -61,7 +61,7 @@ int	dir_env(char *path, char *arg, t_info *info)
 	char	*t;
 	int	trash;
 
-	t = cut_env_name(arg + 1, &trash, info);
+	t = cut_env_name(arg + 1, &trash);
 	env_val = find_env_val(t, info->envp); //수정??
 	ft_free(&t);
 	if (!env_val)
@@ -127,14 +127,13 @@ char	**add_env(char **envp, char *str)
 	return (new);
 }
 
-int	dir_move(char *path, char ***envp, t_info *info)
+int	dir_move(char *path, char ***envp)
 {
 	int	ret;
 	char	*tmp;
 	char	*ck_env;
 	char	buf[PATH_MAX];
 
-	(void)info;
 	ret = chdir(path);
 	if (ret == -1)
 		return(error_print("cd", strerror(errno), NULL, 1));
@@ -169,6 +168,6 @@ int	ft_cd(t_info *info, t_cmd *cur)
 	else
 		while (cur->arg[++i])
 			path[i] = cur->arg[i];
-	dir_move(path, &info->envp, info);
+	dir_move(path, &info->envp);
 	return (RET_TRUE);
 }

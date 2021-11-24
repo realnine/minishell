@@ -28,7 +28,7 @@ int	syntax_check_pipe(char **token)
 int	syntax_check_redi(t_info *info, char **token)
 {
 	int		i;
-	char	msg[] = "mini: syntax error near unexpected token `newline'";
+	char	msg[] = "mini: syntax error near unexpected token";
 
 	i = 0;
 	while (token[i])

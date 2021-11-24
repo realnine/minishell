@@ -92,5 +92,5 @@ void	make_token(t_info *info)
 	// quote 인자가 들어가야할 토큰에 다시 quote buf를 넣어준다 
 	// ex) ["000000"] => [hel lo]
 	replace_quote(info);
-
+	replace_g_ret(info);
 }

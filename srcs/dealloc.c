@@ -1,20 +1,21 @@
 # include "../minishell.h"
 
-void	pipe_free(int **pipe_book)
+void	pipe_free(t_info *info)
 {
 	int i;
 
 	i = 0;
-	if (pipe_book)
+	if (info->pipe_book)
 	{
-		while (pipe_book[i])
+		while (info->pipe_book[i])
 		{
-			close(pipe_book[i][0]);
-			close(pipe_book[i][1]);
-			free(pipe_book[i]);
+			close(info->pipe_book[i][0]);
+			close(info->pipe_book[i][1]);
+			free(info->pipe_book[i]);
 			i++;
 		}
-		free(pipe_book);
+		free(info->pipe_book);
+		info->pipe_book = NULL;
 	}
 }
 
@@ -77,7 +78,7 @@ void	reset_free(t_info *info)
 	info->quote_book = NULL;
 
 	redi_free(info);
-	pipe_free(info->pipe_book);
+	pipe_free(info);
 
 	cur = info->cmd_head;
 	while (cur)

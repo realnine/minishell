@@ -9,7 +9,7 @@ void	exe_cmd(t_info *info, t_cmd *cur)
 	else if (ft_strncmp(cur->cmd, "env", 3) == 0)
 		ft_env(info, cur);
 	else if (ft_strncmp(cur->cmd, "exit", 4) == 0)
-		ft_exit(info, cur);
+		ft_exit(cur);
 	else if (ft_strncmp(cur->cmd, "export", 6) == 0)
 		ft_export(info, cur);
 	else if (ft_strncmp(cur->cmd, "pwd", 3) == 0)

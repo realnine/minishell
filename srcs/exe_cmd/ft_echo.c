@@ -26,12 +26,11 @@ char	*ft_strjoin_free(char *s1, char *s2, int flag)
 	return (str);
 }
 
-char	*cut_env_name(char *arg, int *i, t_info *info)
+char	*cut_env_name(char *arg, int *i)
 {
 	int	len;
 	char	*res;
 
-	(void)info;
 	len = 0;
 	while (arg[len] && (ft_isalpha(arg[len]) || arg[len] == '_' || arg[len] == '?'))
 		len++;
@@ -62,7 +61,7 @@ char	*set_echo(t_info *info, char **token)
 			if (token[i][j] == '$' && token[i][j + 1] && token[i][j + 1] != '\0')
 			{
 				j++;
-				name = cut_env_name(token[i] + j, &j, info);
+				name = cut_env_name(token[i] + j, &j);
 				env_val = find_env_val(name, info->envp);
 				if (!ft_strcmp("?", name))
 					ret = ft_strjoin_free(ret, ft_itoa(g_ret_number), 3);
@@ -73,17 +72,18 @@ char	*set_echo(t_info *info, char **token)
 			else
 				ret = ft_charjoin(ret, token[i][j]);
 		}
-		ret = ft_charjoin(ret, ' ');
+		if (token[i + 1] != NULL)
+			ret = ft_charjoin(ret, ' ');
 	}
 	return (ret);
 }
 
-int	ft_echo(t_info *info, t_cmd *cur)
+int	ft_echo(t_info *info, t_cmd *cur)// (0)
 {
 	char	*str;
 
 	str = NULL;
-	if (!cur->arg_token[0]) //될까?
+	if (!cur->arg_token) //될까?
 		str = ft_strdup("");
 	else
 		str = set_echo(info, cur->arg_token);

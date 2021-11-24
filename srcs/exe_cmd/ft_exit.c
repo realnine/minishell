@@ -5,7 +5,7 @@ int	ft_isspace(char c) //whitespace(공백)
 	return ((c >= 9 && c <= 13) || c == 32);
 }
 
-void	exit_arg(t_info *info, t_cmd *cur, int *ret_num)
+int	exit_arg(t_cmd *cur)
 {
 	int	i;
 
@@ -16,30 +16,53 @@ void	exit_arg(t_info *info, t_cmd *cur, int *ret_num)
 	{
 		if (!ft_isdigit(cur->arg[i]))
 		{
-			info->code = 255;
 			error_print("exit", cur->arg, "numeric argument required", 255);
 			exit(255);
 		}
 		i++;
 	}
-	*ret_num = ft_atoi(cur->arg);
+	return (ft_atoi(cur->arg));
 }
 
-void	ft_exit(t_info *info, t_cmd *cur) //추추
+// void	ft_exit(t_info *info, t_cmd *cur) //추추
+// {
+// 	int	i;
+// 	int	ret_num;
+
+// 	i = -1;
+// 	ret_num = 0;
+// 	if (cur->arg)
+// 	{
+// 		while (cur->arg[++i])
+// 		{
+// 			if (ft_isspace(cur->arg[i]))
+// 				error_print("exit", "too many arguments", NULL, 1);
+// 		}
+// 		exit_arg(info, cur, &ret_num);
+// 	}
+// 	exit(ret_num);
+// }
+
+int	ft_exit(t_cmd *cur)
 {
 	int	i;
-	int	ret_num;
+	int	ret;
+	int	flag;
 
 	i = -1;
-	ret_num = 0;
-	if (cur->arg)
+	ret = 0;
+	flag = 0;
+	if (cur->arg_token)
 	{
-		while (cur->arg[++i])
+		while (cur->arg_token[++i])
 		{
-			if (ft_isspace(cur->arg[i]))
-				error_print("exit", "too many arguments", NULL, 1);
+			flag++;
+			if (flag == 2)
+				return (error_print("exit", "too many arguments", NULL, 1));
+			ret = exit_arg(cur);
 		}
-		exit_arg(info, cur, &ret_num);
 	}
-	exit(ret_num);
+	g_ret_number = ret;
+	exit(ret);
+	return (RET_TRUE);
 }

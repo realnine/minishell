@@ -23,7 +23,7 @@
 #define READ    0
 #define WRITE   1
 
-# define CMD		"cd echo env exit export pwd unset cat grep ls sort wc mkdir rm"
+# define CMD		"cd echo env exit export pwd unset cat grep ls sort wc mkdir rm expr"
 # define REDI		">> > << <"
 
 typedef struct s_cmd
@@ -86,15 +86,17 @@ void	normal_exit(char *msg, t_info *info);
 void	child_exit(t_info *info, t_cmd *cur, int ret);
 
 
-//char	*insert_space(char *src, char *sep, t_info *info);
 int		parse_quote(t_info *info);
+
+// token *
 void	make_token(t_info *info);
-//char	*insert_space_quote(t_info *info);
 void	replace_quote(t_info *info);
-void	make_child(t_info *info);
+void	replace_g_ret(t_info *info);
 
 int		make_cmd_lst(t_info *info, char **token);
 void	set_cmd_lst(t_info *info);
+
+void	make_child(t_info *info);
 
 //deallocate
 void	reset_free(t_info *info);
@@ -137,30 +139,33 @@ int		dir_env(char *path, char *arg, t_info *info);
 int		dir_designate(char *path, t_cmd *cur, t_info *info);
 void	dir_start_home(char *path, char *arg, char **envp);
 char	**add_env(char **envp, char *str);
-int		dir_move(char *path, char ***envp, t_info *info);
+int		dir_move(char *path, char ***envp);
 int		ft_cd(t_info *info, t_cmd *cur);
 
 //echo.c
 char	*ft_strjoin_free(char *s1, char *s2, int flag);
-char	*cut_env_name(char *arg, int *i, t_info *info);
+char	*cut_env_name(char *arg, int *i);
 int		ft_echo(t_info *info, t_cmd *cur);
 //env.c
-int		env_denied(t_info *info, char *arg);
+
+int		env_denied(t_info *info, t_cmd *cur, char *arg);
+int	print_env(t_info *info, t_cmd *cur);
 int		ft_env(t_info *info, t_cmd *cur);
 
 //exit.c
-void	ft_exit(t_info *info, t_cmd *cur);
+int	ft_exit(t_cmd *cur);
 
 //export.c
 int		ft_strslen(char **strs);
 int		is_export_normal(char *arg);
 char	**copy_envp(char **envp, int add);
 char	**sort_export(char **envp);
-int		set_export_print(t_cmd *cur, char **envp, t_info *info);
+int		set_export_print(t_cmd *cur, char **envp);
 char	*ft_charjoin(char *str, char c);
-char	*export_etc(char *arg, char **envp, char *str, t_info *info);
+char	*export_etc(char *arg, char **envp, char *str);
 int		is_exist_env(char *name, char **envp);
-int		add_export(char *arg, char ***envp, t_info *info);
+int		add_export(char *arg, char ***envp);
+int	valid_env_name(char *s, int flag);
 int		ft_export(t_info *info, t_cmd *cur);
 
 //pwd.c

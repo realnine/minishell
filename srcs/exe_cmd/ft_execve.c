@@ -75,18 +75,13 @@ void	ft_execve(t_info *info, t_cmd *cur)
 	argv = make_argv(info, cur);
 	//set_signal(2);
 	
-	printf("%d,%d\n", cur->fd_in, cur->fd_out);
-	if (cur->fd_in != 0)
-	{
+	//printf("%d,%d\n", cur->fd_in, cur->fd_out);
+	//if (cur->fd_in != 0)
 		dup2(cur->fd_in, STDIN_FILENO);
-		//close(cur->fd_in);
-	}
-	if (cur->fd_in != 1)
-	{
+	//if (cur->fd_in != 1)
 		dup2(cur->fd_out, STDOUT_FILENO);
-		//close(cur->fd_out);
-	}
-
+		
+	//print_argv(argv);
 	if (is_path(cur->cmd) == RET_TRUE)
 		g_ret_number = execve(argv[0], argv, info->envp);
 	else
@@ -96,10 +91,9 @@ void	ft_execve(t_info *info, t_cmd *cur)
 		while (i < 3)
 		{
 			argv[0] = ft_strjoin(path[i], cur->cmd);
-			print_argv(argv);
 			g_ret_number = execve(argv[0], argv, info->envp);
-			// execve가 성공하면 아래부터는 실행되지 않음
-			// execve가 성공하면 모든 메모리는 자동 해제됨
+				// execve가 성공하면 아래부터는 실행되지 않음
+				// execve가 성공하면 모든 메모리는 자동 해제됨
 			ft_putstr_fd("-----execve 통과-----\n", 1);
 			free (argv[0]); // strjoin
 			i++;

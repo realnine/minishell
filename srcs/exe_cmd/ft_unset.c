@@ -51,32 +51,51 @@ int	remove_env(char ***envp, int pos)
 	return (RET_TRUE);
 }
 
-int	ft_unset(t_info *info, t_cmd *cur) //malloc error (export HHH ABC=123 -> export -> unset HHH ABC)
+// int	ft_unset(t_info *info, t_cmd *cur) //malloc error (export HHH ABC=123 -> export -> unset HHH ABC)
+// {
+// 	int	i;
+// 	int	env_pos;
+// 	char	*tmp;
+
+// 	i = -1;
+// 	tmp = NULL;
+// 	if (!cur->arg)
+// 		return (RET_FALSE); //종료
+// 	while (cur->arg[++i])
+// 	{
+// 		while (cur->arg[i] && cur->arg[i] != ' ')
+// 			tmp = ft_charjoin(tmp, cur->arg[i++]);
+// 		if (!tmp || (tmp[0] != '_' && !ft_isalnum(tmp[0]))) //tmp존재하지 않을떄?
+// 		{
+// 			ft_free(&tmp);
+// 			return (error_print("unset", cur->arg, "not a valid identifier", 1));
+// 		}
+// 		env_pos = is_exist_env(tmp, info->envp);
+// 		ft_free(&tmp);
+// 		if (env_pos == -1)
+// 			return (RET_FALSE); //그냥 종료
+// 		remove_env(&info->envp, env_pos);
+// 		if (!cur->arg[i])
+// 			break ;
+// 	}
+// 	g_ret_number = 0;
+// 	return (RET_TRUE);
+// }
+
+int	ft_unset(t_info *info, t_cmd *cur)
 {
 	int	i;
 	int	env_pos;
-	char	*tmp;
 
 	i = -1;
-	tmp = NULL;
 	if (!cur->arg)
-		return (RET_FALSE); //종료
-	while (cur->arg[++i])
+		return (RET_FALSE);
+	while (cur->arg_token[++i])
 	{
-		while (cur->arg[i] && cur->arg[i] != ' ')
-			tmp = ft_charjoin(tmp, cur->arg[i++]);
-		if (!tmp || (tmp[0] != '_' && !ft_isalnum(tmp[0]))) //tmp존재하지 않을떄?
-		{
-			ft_free(&tmp);
+		if (!valid_env_name(cur->arg_token[i], 'u'))
 			return (error_print("unset", cur->arg, "not a valid identifier", 1));
-		}
-		env_pos = is_exist_env(tmp, info->envp);
-		ft_free(&tmp);
-		if (env_pos == -1)
-			return (RET_FALSE); //그냥 종료
+		env_pos = is_exist_env(cur->arg_token[i], info->envp);
 		remove_env(&info->envp, env_pos);
-		if (!cur->arg[i])
-			break ;
 	}
 	g_ret_number = 0;
 	return (RET_TRUE);
