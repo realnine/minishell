@@ -11,6 +11,7 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+#include <termios.h>
 
 // color
 # define SKY	"\x1b[1;34m"
@@ -24,7 +25,7 @@
 # define WRITE	1
 
 # define CMD	"cd echo env exit export pwd unset \
-	cat grep ls sort wc mkdir rm expr"
+	cat grep ls sort wc mkdir rm expr "
 # define REDI	">> > << <"
 
 typedef struct s_cmd
@@ -126,6 +127,7 @@ int		err_print(char *msg, int ret);
 int		set_redi_io(t_info *info);
 void	make_all_pipe(t_info *info);
 
+
 // ===============shell_ft=======================
 // cd.c
 int		is_designate(char *arg);
@@ -146,11 +148,11 @@ int		ft_echo(t_info *info, t_cmd *cur);
 //env.c
 
 int		env_denied(t_info *info, t_cmd *cur, char *arg);
-int		print_env(t_info *info, t_cmd *cur);
+int	print_env(t_info *info, t_cmd *cur);
 int		ft_env(t_info *info, t_cmd *cur);
 
 //exit.c
-int		ft_exit(t_cmd *cur);
+int	ft_exit(t_cmd *cur);
 
 //export.c
 int		ft_strslen(char **strs);
@@ -162,7 +164,7 @@ char	*ft_charjoin(char *str, char c);
 char	*export_etc(char *arg, char **envp, char *str);
 int		is_exist_env(char *name, char **envp);
 int		add_export(char *arg, char ***envp);
-int		valid_env_name(char *s, int flag);
+int	valid_env_name(char *s, int flag);
 int		ft_export(t_info *info, t_cmd *cur);
 
 //pwd.c

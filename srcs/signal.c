@@ -7,19 +7,19 @@
 // SIGINT와 SIGQUIT은 원래 프로세스 종료 시그널이다
 void	reset_prompt(void)
 {
-	char	path[200];
-	int		len;
-	char	*str;
-
-	getcwd(path, 200);
-	len = ft_strlen(path);
-	path[len++] = '$';
-	while (len < 70)
-		path[len++] = ' ';
-	path[len] = '\0';
-	str = ft_strjoin2(SKY, path, RESET);
-	ft_putstr_fd(str, 1);
-	free(str);
+	//char	path[200];
+	//int		len;
+	//char	*str;
+//
+	//getcwd(path, 200);
+	//len = ft_strlen(path);
+	//path[len++] = '$';
+	//while (len < 70)
+	//	path[len++] = ' ';
+	//path[len] = '\0';
+	//str = ft_strjoin2(SKY, path, RESET);
+	//ft_putstr_fd(str, 1);
+	//free(str);
 	ft_putstr_fd("\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();

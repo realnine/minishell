@@ -77,11 +77,15 @@ void	main_routine(t_info *info)
 int	main(int argc, char **argv, char **envp)
 {
 	t_info	info;
+	struct termios term;
 
 	(void)argc;
 	(void)argv;
 	info.envp = set_env(&info, envp);
 	init_info(&info);
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag |= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	while (1)
 	{
 		set_signal(1);
