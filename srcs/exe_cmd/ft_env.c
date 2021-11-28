@@ -1,8 +1,8 @@
-# include "../../minishell.h"
-//env_name 조건 = !ft_strchr(" \t\n$\"\'\\/"
+#include "../../minishell.h"
+
 int	env_denied(t_info *info, t_cmd *cur, char *arg)
 {
-	int	i;
+	int		i;
 	char	*env_val;
 
 	i = -1;
@@ -18,13 +18,13 @@ int	env_denied(t_info *info, t_cmd *cur, char *arg)
 				return (print_env(info, cur));
 		}
 	}
-	return (error_print("env", arg, "No such file or directory", 0)); //숫자
+	return (error_print("env", arg, "No such file or directory", 127));
 }
 
 int	print_env(t_info *info, t_cmd *cur)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	char	*name;
 
 	i = -1;
@@ -44,7 +44,7 @@ int	print_env(t_info *info, t_cmd *cur)
 
 int	ft_env(t_info *info, t_cmd *cur)
 {
-	g_ret_number = 0; //추추
+	g_ret_number = 0;
 	if (cur->arg_token)
 	{
 		if (cur->arg_token[0][0] != '-')

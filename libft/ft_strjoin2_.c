@@ -1,4 +1,3 @@
-
 #include "libft.h"
 
 char	*ft_strjoin2(char *s1, char *s2, char *s3)

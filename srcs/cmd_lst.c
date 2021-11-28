@@ -20,7 +20,7 @@ void	add_cmd_list(t_info *info, int start, int end)
 	}
 }
 
-void	set_cmd_lst(t_info *info)
+int	set_cmd_lst(t_info *info)
 {
 	t_cmd	*cur;
 
@@ -28,10 +28,12 @@ void	set_cmd_lst(t_info *info)
 	while (cur)
 	{
 		set_cmd(info, cur);
-		set_redi(info, cur);
+		if (set_redi(info, cur) == RET_FALSE)
+			return (RET_FALSE);
 		set_arg(info, cur);
 		cur = cur->next;
 	}
+	return (RET_TRUE);
 }
 
 int	make_cmd_lst(t_info *info, char **token)
@@ -52,6 +54,7 @@ int	make_cmd_lst(t_info *info, char **token)
 			i++;
 	}
 	add_cmd_list(info, start, i);
-	set_cmd_lst(info);
+	if (set_cmd_lst(info) == RET_FALSE)
+		return (RET_FALSE);
 	return (RET_TRUE);
 }

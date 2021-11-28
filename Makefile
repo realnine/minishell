@@ -3,15 +3,16 @@ CFLAGS		= -Wall -Werror -Wextra -g #-g3 -fsanitize=address
 
 NAME		= minishell
 LIBFT		= ./libft/libft.a
-RL_FLAG		= -L /usr/local/opt/readline/lib -lreadline -I /usr/local/opt/readline/include
+#RL_FLAG		= -L /usr/local/opt/readline/lib -lreadline -I /usr/local/opt/readline/include
 #RL_FLAG		= -lft -L ./libft -lreadline -I /usr/local/opt/readline/include
-#RL_FLAG		= -L /Users/jinglee/.brew/opt/readline/lib -lreadline \
+RL_FLAG		= -L /Users/jinglee/.brew/opt/readline/lib -lreadline \
 				-I /Users/jinglee/.brew/opt/readline/include
 
 SRCS1		= child.c cmd_lst_set.c cmd_lst.c dealloc.c exit.c main.c pipe.c quote.c \
 				redirect.c signal.c syntax.c token.c token_u.c utils_print.c utils.c \
-				utils_print_err.c utils_is.c dealloc_u.c
-SRCS2		= ft_cd.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c ft_execve.c
+				utils_print_err.c utils_is.c dealloc_u.c cmd_lst_utils.c string.c
+SRCS2		= ft_cd.c ft_cd2.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c \
+				print_export.c etc.c ft_unset.c ft_execve.c
 
 SRCS1_PATH	= $(addprefix srcs/, ${SRCS1})
 SRCS2_PATH	= $(addprefix srcs/exe_cmd/, ${SRCS2})

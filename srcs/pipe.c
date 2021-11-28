@@ -45,9 +45,9 @@ void	make_all_pipe(t_info *info)
 	cur = info->cmd_head;
 	while (cur)
 	{
-		if (cur->next)
+		if (cur->next && !cur->redi_out)
 			cur->fd_out = cur->pipe_fd[WRITE];
-		if (cur->prev)
+		if (cur->prev && !cur->redi_in)
 			cur->fd_in = cur->prev->pipe_fd[READ];
 		cur = cur->next;
 	}

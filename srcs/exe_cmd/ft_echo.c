@@ -1,4 +1,4 @@
-# include "../../minishell.h"
+#include "../../minishell.h"
 
 char	*ft_strjoin_free(char *s1, char *s2, int flag)
 {
@@ -8,7 +8,8 @@ char	*ft_strjoin_free(char *s1, char *s2, int flag)
 
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
-	if (!(str = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1))))
+	str = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1));
+	if (!str)
 		return (NULL);
 	if (s1)
 		ft_memcpy(str, s1, s1_len);
@@ -26,71 +27,98 @@ char	*ft_strjoin_free(char *s1, char *s2, int flag)
 	return (str);
 }
 
-char	*cut_env_name(char *arg, int *i)
-{
-	int	len;
-	char	*res;
-
-	len = 0;
-	while (arg[len] && (ft_isalpha(arg[len]) || arg[len] == '_' || arg[len] == '?'))
-		len++;
-	res = (char *)malloc(sizeof(char) * (len + 1));
-	if (!res)
-		error_print("malloc error", NULL, NULL, 0); //malloc error g_ret_number 값찾기
-	ft_memcpy(res, arg, len);
-	res[len] = '\0';
-	*i += len - 1;
-	return (res);
-}
-
-char	*set_echo(t_info *info, char **token)
+int	remove_q(char *arg, char flag)
 {
 	char	*ret;
-	char	*name;
-	char	*env_val;
 	int	i;
-	int	j;
+	int	len;
+	int	ck;
 
-	i = -1;
+	len = ft_strlen(arg);
 	ret = NULL;
-	while (token[++i])
+	i = -1;
+	ck = 2;
+	while (arg[++i])
 	{
-		j = -1;
-		while (token[i][++j])
+		if (arg[i] == flag)
 		{
-			if (token[i][j] == '$' && token[i][j + 1] && token[i][j + 1] != '\0')
-			{
-				j++;
-				name = cut_env_name(token[i] + j, &j);
-				env_val = find_env_val(name, info->envp);
-				if (!ft_strcmp("?", name))
-					ret = ft_strjoin_free(ret, ft_itoa(g_ret_number), 3);
-				else if (env_val)
-					ret = ft_strjoin_free(ret, env_val, 1);
-				ft_free(&name);
-			}
-			else
-				ret = ft_charjoin(ret, token[i][j]);
+			ft_strlcpy(arg + i, arg + i + 1, len - i);
+			i--;
+			ck++;
 		}
-		if (token[i + 1] != NULL)
-			ret = ft_charjoin(ret, ' ');
 	}
-	return (ret);
+	return (ck / 2);
 }
 
-int	ft_echo(t_info *info, t_cmd *cur)// (0)
+int		not_interpre(char *str)
+{
+	int	len;
+
+	len = 0;
+	while (str && str[len])
+		len++;
+	if (str[0] == '\'' && str[1] == '$' && str[len - 1] == '\'')
+		return (RET_TRUE);
+	return (RET_FALSE);
+}
+
+char	*set_echo(t_info *info, t_cmd *cur)
+{
+	int	i;
+	int	j;
+	char	*str;
+	char	*name;
+	char	*val;
+
+	i = -1;
+	str = NULL;
+	while (cur->arg_token[++i])
+	{
+		if (not_interpre(cur->arg_token[i]))
+		{
+			remove_q(cur->arg_token[i], '\'');
+			str = ft_strjoin_free(str, cur->arg_token[i], 1);
+		}
+		else
+		{
+			j = -1;
+			while (cur->arg_token[i][++j])
+			{
+				if (cur->arg_token[i][j] == '$' && cur->arg_token[i][j + 1] \
+				&& cur->arg_token[i][j + 1] != '\0')
+				{
+					j++;
+					name = cut_env_name(cur->arg_token[i] + j, &j);
+					val = find_env_val(name, info->envp);
+					str = ft_strjoin_free(str, val, 1);
+				}
+				else if (cur->arg_token[i][j] && cur->arg_token[i][j] != '\"')
+					str = ft_charjoin(str, cur->arg_token[i][j]);
+			}
+		}
+		str = ft_charjoin(str, ' ');
+	}
+	return (str);
+}
+
+int	ft_echo(t_info *info, t_cmd *cur)
 {
 	char	*str;
 
 	str = NULL;
-	if (!cur->arg_token) //될까?
+	if (!cur->arg_token)
 		str = ft_strdup("");
 	else
-		str = set_echo(info, cur->arg_token);
+		str = set_echo(info, cur);
 	ft_putstr_fd(str, cur->fd_out);
 	if (cur->opt != 'n')
 		ft_putchar_fd('\n', cur->fd_out);
+	//int i = -1;
+	//while (cur->arg_token[++i])
+	//	printf("token %d = [%s]\n", i, cur->arg_token[i]);
+	//printf("\n");
 	ft_free(&str);
-	g_ret_number = 0; //추추
+	(void)info;
+	g_ret_number = 0;
 	return (RET_TRUE);
 }

@@ -13,16 +13,20 @@ void	init_info(t_info *info)
 	info->token = NULL;
 	info->num_quote = 0;
 	info->quote_book = NULL;
+	info->pipe_book = NULL;
 	info->idx_q = 0;
+	tcgetattr(STDIN_FILENO, &(info->term));
+	tcgetattr(STDIN_FILENO, &(info->org_term));
+	info->term.c_lflag &= ~ECHOCTL; 
 }
 
 void	prompt(t_info *info)
 {
-	char	path[200];
+	char	path[PATH_MAX];
 	int		len;
 	char	*str;
 
-	getcwd(path, 200);
+	getcwd(path, PATH_MAX);
 	len = ft_strlen(path);
 	path[len] = '$';
 	path[len + 1] = ' ';
@@ -30,8 +34,10 @@ void	prompt(t_info *info)
 	str = ft_strjoin2(SKY, path, RESET);
 	if (!str)
 		error_exit("strjoin error\n", info);
+	tcsetattr(STDIN_FILENO, TCSANOW, &(info->term));
 	info->line = readline(str);
 	free(str);
+	tcsetattr(STDIN_FILENO, TCSANOW, &info->org_term);
 }
 
 char	**set_env(t_info *info, char **env)
@@ -48,7 +54,8 @@ char	**set_env(t_info *info, char **env)
 	i = -1;
 	while (env[++i])
 	{
-		new[i] = ft_strdup(env[i]);
+		new[i] = (char *)malloc(sizeof(char) * PATH_MAX + 1);
+		ft_strlcpy(new[i], env[i], ft_strlen(env[i]) + 1);
 		if (!new[i])
 			error_exit("malloc error", info);
 	}
@@ -69,23 +76,17 @@ void	main_routine(t_info *info)
 	if (make_cmd_lst(info, info->token) == RET_FALSE)
 		return ;
 	make_all_pipe(info);
-	if (set_redi_io(info) == RET_FALSE)
-		return ;
 	make_child(info);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_info	info;
-	struct termios term;
 
 	(void)argc;
 	(void)argv;
 	info.envp = set_env(&info, envp);
 	init_info(&info);
-	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag |= ~ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	while (1)
 	{
 		set_signal(1);
@@ -97,6 +98,7 @@ int	main(int argc, char **argv, char **envp)
 		if (info.line)
 			main_routine(&info);
 		reset_free(&info);
+		system("leaks minishell | grep leaked");
 	}
 	return (0);
 }

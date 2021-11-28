@@ -31,7 +31,7 @@ int	redirect_in(t_cmd *cmd)
 	{
 		if (input_multiline(cmd) == RET_FALSE)
 			return (RET_FALSE);
-		cmd->fd_in = open(cmd->input_file, O_RDONLY | O_CREAT, 0777);
+		cmd->fd_in = open(cmd->input_file, O_RDWR | O_CREAT, 0777);
 	}
 	else
 	{

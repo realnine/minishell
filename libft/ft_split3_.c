@@ -13,7 +13,7 @@ char	**ft_split3(char *scr, char *sep)
 	start = ptr;
 	while (*ptr)
 	{
-		len =  ft_strlen(sep);
+		len = ft_strlen(sep);
 		if (ft_strncmp(ptr, sep, len) == 0)
 		{
 			while (len--)

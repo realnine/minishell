@@ -2,7 +2,6 @@
 # define MINISHELL_H
 
 # include "libft/libft.h"
-
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -11,7 +10,7 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <sys/wait.h>
-#include <termios.h>
+# include <termios.h>
 
 // color
 # define SKY	"\x1b[1;34m"
@@ -25,7 +24,7 @@
 # define WRITE	1
 
 # define CMD	"cd echo env exit export pwd unset \
-	cat grep ls sort wc mkdir rm expr "
+cat grep ls sort wc mkdir rm expr awk sed more"
 # define REDI	">> > << <"
 
 typedef struct s_cmd
@@ -67,6 +66,9 @@ typedef struct s_info
 	char	**redi_book;
 	int		**pipe_book;
 	t_cmd	*cmd_head;
+
+	struct termios term;
+	struct termios org_term;
 }	t_info;
 
 int	g_ret_number;
@@ -90,10 +92,11 @@ void	replace_quote(t_info *info);
 void	replace_g_ret(t_info *info);
 
 int		make_cmd_lst(t_info *info, char **token);
-void	set_cmd_lst(t_info *info);
+int		set_cmd_lst(t_info *info);
 void	set_arg(t_info *info, t_cmd *cur);
-void	set_redi(t_info *info, t_cmd *cur);
+int		set_redi(t_info *info, t_cmd *cur);
 void	set_cmd(t_info *info, t_cmd *cur);
+void	put_arg(t_info *info, t_cmd *cur, int i);
 
 void	make_child(t_info *info);
 
@@ -125,8 +128,9 @@ int		error_print(char *s1, char *s2, char *s3, int ret);
 int		err_print(char *msg, int ret);
 // redirection & pipe
 int		set_redi_io(t_info *info);
+int		redirect_out(t_cmd *cmd);
+int		redirect_in(t_cmd *cmd);
 void	make_all_pipe(t_info *info);
-
 
 // ===============shell_ft=======================
 // cd.c
@@ -148,23 +152,25 @@ int		ft_echo(t_info *info, t_cmd *cur);
 //env.c
 
 int		env_denied(t_info *info, t_cmd *cur, char *arg);
-int	print_env(t_info *info, t_cmd *cur);
+int		print_env(t_info *info, t_cmd *cur);
 int		ft_env(t_info *info, t_cmd *cur);
 
 //exit.c
-int	ft_exit(t_cmd *cur);
+int		ft_exit(t_cmd *cur);
 
 //export.c
 int		ft_strslen(char **strs);
 int		is_export_normal(char *arg);
 char	**copy_envp(char **envp, int add);
-char	**sort_export(char **envp);
+void	sort_export(char ***copy, int i);
+char	**set_export(char **envp);
+void	export_print(t_cmd *cur, char **sorted, int i);
 int		set_export_print(t_cmd *cur, char **envp);
 char	*ft_charjoin(char *str, char c);
 char	*export_etc(char *arg, char **envp, char *str);
 int		is_exist_env(char *name, char **envp);
 int		add_export(char *arg, char ***envp);
-int	valid_env_name(char *s, int flag);
+int		valid_env_name(char *s, int flag);
 int		ft_export(t_info *info, t_cmd *cur);
 
 //pwd.c
@@ -174,5 +180,6 @@ int		remove_env(char ***envp, int pos);
 int		ft_unset(t_info *info, t_cmd *cur);
 
 void	ft_execve(t_info *info, t_cmd *cur);
+void	exit_execve(t_info *info, t_cmd *cur);
 
 #endif

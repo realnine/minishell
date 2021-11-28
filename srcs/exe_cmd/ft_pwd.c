@@ -1,6 +1,6 @@
-# include "../../minishell.h"
+#include "../../minishell.h"
 
-void	ft_pwd(t_cmd *cur) //이래도 되나,,?
+void	ft_pwd(t_cmd *cur)
 {
 	char	path[PATH_MAX];
 
