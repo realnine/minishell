@@ -17,7 +17,7 @@ void	init_info(t_info *info)
 	info->idx_q = 0;
 	tcgetattr(STDIN_FILENO, &(info->term));
 	tcgetattr(STDIN_FILENO, &(info->org_term));
-	info->term.c_lflag &= ~ECHOCTL; 
+	info->term.c_lflag &= ~ECHOCTL;
 }
 
 void	prompt(t_info *info)
@@ -87,6 +87,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	info.envp = set_env(&info, envp);
 	init_info(&info);
+	g_ret_number = 1;
 	while (1)
 	{
 		set_signal(1);
@@ -98,7 +99,6 @@ int	main(int argc, char **argv, char **envp)
 		if (info.line)
 			main_routine(&info);
 		reset_free(&info);
-		system("leaks minishell | grep leaked");
 	}
 	return (0);
 }

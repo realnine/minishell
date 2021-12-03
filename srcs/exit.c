@@ -22,3 +22,10 @@ void	child_exit(t_info *info, t_cmd *cur, int ret)
 	exit_free(info);
 	exit(ret);
 }
+
+void	exit_execve(t_info *info, t_cmd *cur)
+{
+	error_print(cur->cmd, "no such file or directory", NULL, 1);
+	exit_free(info);
+	exit(127);
+}

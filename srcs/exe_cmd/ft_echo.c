@@ -1,104 +1,77 @@
 #include "../../minishell.h"
 
-char	*ft_strjoin_free(char *s1, char *s2, int flag)
+int	not_interpre(char **str)
 {
-	size_t	s1_len;
-	size_t	s2_len;
-	char	*str;
+	int	len;
 
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	str = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1));
-	if (!str)
-		return (NULL);
-	if (s1)
-		ft_memcpy(str, s1, s1_len);
-	ft_memcpy(str + s1_len, s2, s2_len);
-	str[s1_len + s2_len] = '\0';
-	if (flag == 1)
-		free(s1);
-	else if (flag == 2)
-		free(s2);
-	else if (flag == 3)
+	len = ft_strlen(*str);
+	if ((*str)[0] == '\'' && (*str)[len - 1] == '\'')
 	{
-		free(s1);
-		free(s2);
+		remove_q(*str, '\'');
+		return (RET_TRUE);
 	}
-	return (str);
+	return (RET_FALSE);
 }
 
-int	remove_q(char *arg, char flag)
+char	*fill_interpre(t_info *info, t_cmd *cur, int	i, int *j)
 {
+	char	*name;
+	char	*val;
 	char	*ret;
-	int	i;
-	int	len;
-	int	ck;
 
-	len = ft_strlen(arg);
+	(*j)++;
 	ret = NULL;
-	i = -1;
-	ck = 2;
-	while (arg[++i])
+	name = cut_env_name(cur->arg_token[i] + (*j), j);
+	val = find_env_val(name, info->envp);
+	ret = ft_strjoin_free(ret, val, 1);
+	ft_free(&name);
+	return (ret);
+}
+
+char	*fill_str(t_info *info, t_cmd *cur, int i)
+{
+	char	*tmp;
+	char	*ret;
+	int		j;
+
+	ret = NULL;
+	tmp = NULL;
+	if (not_interpre(&cur->arg_token[i]))
+		ret = ft_strjoin_free(ret, cur->arg_token[i], 1);
+	else
 	{
-		if (arg[i] == flag)
+		j = -1;
+		while (cur->arg_token[i][++j])
 		{
-			ft_strlcpy(arg + i, arg + i + 1, len - i);
-			i--;
-			ck++;
+			if (cur->arg_token[i][j] == '$' && cur->arg_token[i][j + 1] \
+				&& cur->arg_token[i][j + 1] != '\0')
+			{
+				tmp = fill_interpre(info, cur, i, &j);
+				ret = ft_strjoin_free(ret, tmp, 3);
+			}
+			else if (cur->arg_token[i][j])
+				ret = ft_charjoin(ret, cur->arg_token[i][j]);
+			remove_q(ret, '\"');
 		}
 	}
-	return (ck / 2);
-}
-
-int		not_interpre(char *str)
-{
-	int	len;
-
-	len = 0;
-	while (str && str[len])
-		len++;
-	if (str[0] == '\'' && str[1] == '$' && str[len - 1] == '\'')
-		return (RET_TRUE);
-	return (RET_FALSE);
+	return (ret);
 }
 
 char	*set_echo(t_info *info, t_cmd *cur)
 {
-	int	i;
-	int	j;
-	char	*str;
-	char	*name;
-	char	*val;
+	int		i;
+	char	*ret;
+	char	*tmp;
 
 	i = -1;
-	str = NULL;
+	ret = NULL;
 	while (cur->arg_token[++i])
 	{
-		if (not_interpre(cur->arg_token[i]))
-		{
-			remove_q(cur->arg_token[i], '\'');
-			str = ft_strjoin_free(str, cur->arg_token[i], 1);
-		}
-		else
-		{
-			j = -1;
-			while (cur->arg_token[i][++j])
-			{
-				if (cur->arg_token[i][j] == '$' && cur->arg_token[i][j + 1] \
-				&& cur->arg_token[i][j + 1] != '\0')
-				{
-					j++;
-					name = cut_env_name(cur->arg_token[i] + j, &j);
-					val = find_env_val(name, info->envp);
-					str = ft_strjoin_free(str, val, 1);
-				}
-				else if (cur->arg_token[i][j] && cur->arg_token[i][j] != '\"')
-					str = ft_charjoin(str, cur->arg_token[i][j]);
-			}
-		}
-		str = ft_charjoin(str, ' ');
+		tmp = fill_str(info, cur, i);
+		tmp = ft_charjoin(tmp, ' ');
+		ret = ft_strjoin_free(ret, tmp, 3);
 	}
-	return (str);
+	return (ret);
 }
 
 int	ft_echo(t_info *info, t_cmd *cur)
@@ -113,10 +86,6 @@ int	ft_echo(t_info *info, t_cmd *cur)
 	ft_putstr_fd(str, cur->fd_out);
 	if (cur->opt != 'n')
 		ft_putchar_fd('\n', cur->fd_out);
-	//int i = -1;
-	//while (cur->arg_token[++i])
-	//	printf("token %d = [%s]\n", i, cur->arg_token[i]);
-	//printf("\n");
 	ft_free(&str);
 	(void)info;
 	g_ret_number = 0;

@@ -78,9 +78,11 @@ int	add_export(char *arg, char ***envp)
 int	ft_export(t_info *info, t_cmd *cur)
 {
 	int	i;
+	int	flag;
 
 	i = -1;
 	g_ret_number = 0;
+	flag = 0;
 	if (!cur->arg_token)
 		return (set_export_print(cur, info->envp));
 	else
@@ -88,10 +90,16 @@ int	ft_export(t_info *info, t_cmd *cur)
 		while (cur->arg_token[++i])
 		{
 			if (!valid_env_name(cur->arg_token[i], 'e'))
+			{
 				error_print("export", cur->arg_token[i], \
 				"not a valid identifier", 1);
-			add_export(cur->arg_token[i], &info->envp);
+				flag = 1;
+			}
+			else
+				add_export(cur->arg_token[i], &info->envp);
 		}
+		if (flag == 1)
+			return (RET_FALSE);
 	}
 	return (RET_TRUE);
 }

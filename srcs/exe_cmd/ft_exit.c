@@ -41,7 +41,7 @@ int	ft_exit(t_cmd *cur)
 	int	flag;
 
 	i = -1;
-	ret = 0;
+	ret = g_ret_number;
 	flag = 0;
 	if (cur->arg_token)
 	{

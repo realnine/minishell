@@ -34,13 +34,6 @@ char	*cut_env_name(char *arg, int *i)
 	return (res);
 }
 
-void	exit_execve(t_info *info, t_cmd *cur)
-{
-	error_print(cur->cmd, "no such file or directory", NULL, 1);
-	exit_free(info);
-	exit(127);
-}
-
 int	valid_env_name(char *s, int flag)
 {
 	int	i;
@@ -57,4 +50,48 @@ int	valid_env_name(char *s, int flag)
 		}
 	}
 	return (RET_TRUE);
+}
+
+char	*ft_strjoin_free(char *s1, char *s2, int flag)
+{
+	size_t	s1_len;
+	size_t	s2_len;
+	char	*str;
+
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	str = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1));
+	if (!str)
+		return (NULL);
+	if (s1)
+		ft_memcpy(str, s1, s1_len);
+	ft_memcpy(str + s1_len, s2, s2_len);
+	str[s1_len + s2_len] = '\0';
+	if (flag == 1)
+		ft_free(&s1);
+	else if (flag == 2)
+		ft_free(&s2);
+	else if (flag == 3)
+	{
+		ft_free(&s1);
+		ft_free(&s2);
+	}
+	return (str);
+}
+
+void	remove_q(char *arg, char flag)
+{
+	int		i;
+	int		len;
+
+	len = ft_strlen(arg);
+	i = -1;
+	while (arg[++i])
+	{
+		if (arg[i] == flag)
+		{
+			ft_strlcpy(arg + i, arg + i + 1, len - i);
+			i--;
+		}
+	}
 }

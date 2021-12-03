@@ -70,6 +70,7 @@ void	make_child(t_info *info)
 	int		stat;
 
 	cur = info->cmd_head;
+	set_signal(2);
 	while (cur)
 	{
 		if (cur->cmd)
@@ -78,10 +79,10 @@ void	make_child(t_info *info)
 				exe_cmd(info, cur);
 			else
 			{
-				set_signal(2);
 				create_child(info, cur);
 				pid = wait(&stat);
-				g_ret_number = stat / 256;
+				if (g_ret_number != 130 && g_ret_number != 131)
+					g_ret_number = stat / 256;
 			}
 		}
 		cur = cur->next;

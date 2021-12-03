@@ -55,20 +55,20 @@ typedef struct s_cmd
 
 typedef struct s_info
 {
-	char	**envp;
-	char	*line;
-	char	**token;
-	char	**quote_book;
-	int		idx_q;
-	int		num_quote;
+	char			**envp;
+	char			*line;
+	char			**token;
+	char			**quote_book;
+	int				idx_q;
+	int				num_quote;
 
-	char	**cmd_book;
-	char	**redi_book;
-	int		**pipe_book;
-	t_cmd	*cmd_head;
+	char			**cmd_book;
+	char			**redi_book;
+	int				**pipe_book;
+	t_cmd			*cmd_head;
 
-	struct termios term;
-	struct termios org_term;
+	struct termios	term;
+	struct termios	org_term;
 }	t_info;
 
 int	g_ret_number;
@@ -83,6 +83,7 @@ int		syntax_check(t_info *info);
 void	error_exit(char *msg, t_info *info);
 void	normal_exit(char *msg, t_info *info);
 void	child_exit(t_info *info, t_cmd *cur, int ret);
+void	exit_execve(t_info *info, t_cmd *cur);
 
 int		parse_quote(t_info *info);
 
@@ -180,6 +181,6 @@ int		remove_env(char ***envp, int pos);
 int		ft_unset(t_info *info, t_cmd *cur);
 
 void	ft_execve(t_info *info, t_cmd *cur);
-void	exit_execve(t_info *info, t_cmd *cur);
+void	remove_q(char *arg, char flag);
 
 #endif
